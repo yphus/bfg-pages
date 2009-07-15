@@ -1,0 +1,19 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            <div class="yui-gc" metal:fill-slot="body">
+               <div id="body-content" class="yui-u first">
+                  <h3 style="color: #f00;" tal:condition="not: context/is_saved" tal:content="string:Setup has not been run!"/>      
+                  <div tal:content="structure context/body|nothing"/>
+                  
+               </div>
+               <div id="body-right-content" class="yui-u">
+                  <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/news"/> 
+               </div>
+            </div>
+        </tal:block>
+   </body>
+</html>

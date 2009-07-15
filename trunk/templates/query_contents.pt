@@ -1,0 +1,39 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="body">
+         
+               
+               <h3 tal:content="context/title_or_id"/>
+               <div tal:content="context/description"/>
+               <p/>
+               <hr/>
+               <h4>Folder contents</h4>
+               <div tal:condition="python: context!= context.getRoot()">
+                    <p><a href="" tal:attributes="href python: context.getParent().absolute_url(request)+'contents'">Up</a></p>
+               </div>
+               <table tal:define="url python:context.absolute_url(request)">
+                   <tr><th/><th align="left">Name</th><th align="left">Title</th><th align="left">Description</th><th align="left">Kind</th><th align="left">Class</th><th/><th/></tr>
+                   <tr tal:repeat="item python:context.content_summary(request)" >
+                         <td tal:content="structure item/thumbnail|nothing"></td><td tal:content="item/name"/>
+                         <td><tal:block tal:on-error="string:error" 
+                                        tal:define="view python:'view';
+                                                    view python:item['kind'] == 'Folder' and 'contents' or view;">
+                                <a href="" tal:attributes="href string:${item/url}${view};
+                                        title item/title" 
+                                    tal:content="item/title"/></tal:block></td>
+                         <td tal:content="item/description" tal:on-error="string:error"/>
+                         <td tal:content="item/kind|nothing" tal:on-error="string:error"/>
+                         <td tal:content="item/class_name|nothing" tal:on-error="string:error"/>
+                         <td><a href="" title="Edit" tal:attributes="href string:${item/url}edit">Edit</a></td>
+                         <td><a href="" title="Edit" tal:attributes="href string:${url}delete_content?key=${item/key}">Del</a></td>
+                   
+                   </tr>
+               </table>
+            </div>
+        </tal:block>
+   </body>
+</html>

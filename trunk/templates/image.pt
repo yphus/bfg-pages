@@ -1,0 +1,24 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="body">
+         
+
+               <h3 tal:content="context/title"/> 
+                <p/>
+               <div tal:content="structure context/description|nothing"/>
+               <div>Content Type: <span tal:content="context/mimetype"/></div>
+               <div>Size: <span tal:content="python: context.file and len(context.file)"/></div>
+               <div>Thumbnail: <tal:block tal:content="structure context/thumb_tag"/></div>
+               <div>View: <a href="" tal:attributes="href python:context.absolute_url(request)"><tal:block tal:content="context/filename"/></a></div>
+
+               <img src="context/absolute_url" tal:attributes="src python:context.absolute_url(request)"/>
+               
+            </div>
+        </tal:block>
+   </body>
+</html>
