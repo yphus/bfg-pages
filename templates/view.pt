@@ -1,0 +1,21 @@
+<html metal:use-macro="templates/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="body">
+         
+
+               <h3 tal:content="context/title_or_id"/> 
+               <div>Kind: <tal:block tal:content="context/kind"/>
+               <div>Description: <div tal:content="context/description"/></div>
+               
+               
+               <div tal:content="structure context/body|nothing"/>
+         
+            </div>
+        </tal:block>
+   </body>
+</html>

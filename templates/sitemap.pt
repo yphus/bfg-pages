@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url tal:define="root context/getRoot">
+        <loc tal:content="python: root.absolute_url(request)">http://www.example.com/</loc>
+        <lastmod tal:content="python:root.modified.date()">2005-01-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+  
+  <tal:block tal:repeat="item python: context.getRoot().content_summary(request)">
+    <url tal:condition="python: (item['kind'] == 'Folder' and item.get('heading_tab',[]) ) or (item['kind'] in ['Page','QueryView'])">
+        <loc tal:content="item/url">http://www.example.com/</loc>
+        <lastmod tal:content="python:item['modified'].date()">2005-01-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+  </tal:block>
+</urlset>
+

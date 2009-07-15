@@ -1,0 +1,50 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    metal:define-macro="main">
+
+    <tal:define define="global root context/getRoot;
+                        global banner_url string:/images/banner.jpg"/>
+    <metal:block metal:define-slot="template_defines"/>
+
+    <head profile="http://www.w3.org/2005/10/profile">
+        <link rel="icon" type="image/png" href="/images/logo.png" />
+        <title metal:define-slot="title"><tal:block  tal:content="string: ${root/site_title} - ${context/title}" /></title>
+        <!-- Combo-handled YUI CSS files: --> 
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.7.0/build/reset-fonts-grids/reset-fonts-grids.css&2.7.0/build/base/base-min.css&2.7.0/build/menu/assets/skins/sam/menu.css"> 
+        <!-- Combo-handled YUI JS files: --> 
+        <script type="text/javascript" src="http://yui.yahooapis.com/combo?2.7.0/build/yahoo-dom-event/yahoo-dom-event.js&2.7.0/build/container/container_core-min.js&2.7.0/build/menu/menu-min.js"></script> 
+        <!-- Local over-rides to css -->
+        <link rel="stylesheet" type="text/css" href="/css/stylesheet.css" />
+        <tal:block metal:define-slot="additional_header_info"/>    
+        <base metal:define-slot="base_href" tal:attributes="href python:context.absolute_url(request)" />
+        <tal:block tal:content="structure root/analytics_code"/>
+
+    </head>
+
+    <body class="yui-skin-sam">
+        <div id="doc2">
+            
+            <div id="hd" metal:define-slot="header">
+                <metal:block metal:use-macro="template_path/utils/macros/header">HEADER</metal:block>
+            </div>
+            
+            
+            <div id="bd">
+                <div id="nav_bar" class="yui-ge">
+                  <metal:block metal:use-macro="template_path/utils/macros/breadcrumbs"/>
+                  <metal:block metal:use-macro="template_path/utils/macros/heading_actions"/>
+                </div>
+                <tal:block tal:omit-tag="" metal:define-slot="body"/>
+            </div>     
+      
+     
+
+      
+           
+            <div id="ft" metal:define-slot="footer">
+                <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/footer"/> 
+            </div>
+
+        </div>
+    </body>
+</html>

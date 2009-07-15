@@ -1,0 +1,43 @@
+<html metal:use-macro="templates/main_template/macros/main">
+   <head>
+    <title metal:fill-slot="title" tal:content="context/title"></title>
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="body">
+               <script src="/static/nicEdit.js" type="text/javascript"></script>
+               <i tal:condition="view/status" tal:content="view/status" />
+                <ul tal:condition="view/widgets/errors">
+                  <li tal:repeat="error view/widgets/errors">
+                    <tal:block condition="error/widget">
+                      <tal:block replace="error/widget/label" />:
+                    </tal:block>
+                    <tal:block replace="structure error/render" />
+                  </li>
+                </ul>
+                
+                <form action="edit" method="post">
+                   <div class="row" tal:repeat="widget view/widgets/values">
+                      <b tal:condition="widget/error"
+                       tal:content="structure widget/error/render"
+                       />
+
+                      <label for=""
+                           tal:attributes="for widget/id"
+                           tal:content="widget/label"  />
+                    
+                      <input type="text" tal:replace="structure widget/render" /> 
+                   </div> 
+                   <div class="action" tal:repeat="action view/actions/values">
+                      <input type="submit" tal:replace="structure action/render"
+                             />
+                   </div> 
+                </form>
+                <script type="text/javascript">
+                new nicEditor({fullPanel : true, iconsPath:'/images/nicEditorIcons.gif'}).panelInstance('form-widgets-body');
+                </script>
+            </div>
+        </tal:block>
+   </body>
+</html>
