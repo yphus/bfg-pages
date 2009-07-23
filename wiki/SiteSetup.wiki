@@ -9,7 +9,7 @@ stuff things up !  Yep I should put some guards in to stop that.
 
 = Details =
 
-Complete the [Installation] and start your server.
+Complete the [Install] steps and start your server.
 Connect to your server and with the following url
 
 {{{
@@ -41,7 +41,5 @@ http://myserver:port/contents
 }}}
 
 Some usage docs will follow soon.
-
-
 
 
