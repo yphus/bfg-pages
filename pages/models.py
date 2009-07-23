@@ -275,10 +275,11 @@ class FolderishMixin(db.Model):
     def clearCache(self):
         
         url = self.absolute_url(self._request)
+        path = self.getPath().rstrip()
         self.root.delcached(url.rstrip('/'))
         self.root.delcached(url+"view")
-        self.root.delcached(url+":summary")
-        self.root.delcached(url+":links")
+        self.root.delcached(path+":summary")
+        self.root.delcached(path+":links")
         
       
     def contentValues(self,REQUEST=None):
@@ -310,7 +311,7 @@ class FolderishMixin(db.Model):
         results = []
         root = self.getRoot()
         
-        cache_key = str(self.getPath())+":summary"
+        cache_key = str(self.getPath().rstrip('/'))+":summary"
         cached_result = root.getcached(cache_key)
        
         if cached_result:
@@ -873,7 +874,7 @@ class QueryView(FolderishMixin,ContentishMixin):
         results = []
         
         root = self.getRoot()
-        cache_key = str(self.getPath())+":summary"
+        cache_key = str(self.getPath().rstrip())+":summary"
         cached_result = root.getcached(cache_key)
         
         if cached_result:
