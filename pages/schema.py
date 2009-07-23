@@ -104,7 +104,7 @@ class BaseStructure(schemaish.Structure):
         }
         
 def list_contents(field,context,request):
-    contents= [i for i in context.contentNames(request)]
+    contents= [i for i in context.contentNames()]
     contents.insert(0,'-- no content --')
     return contents        
 

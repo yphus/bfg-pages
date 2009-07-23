@@ -18,6 +18,7 @@ import models
 from utils import cacheoutput
 from pages.utils import make_time_header
 import pages
+from pages import setup_site
 
 @admin_required
 def setup_view(context, request):
