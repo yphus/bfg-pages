@@ -82,6 +82,7 @@ Now create some symlinks to the files in the samples folder.  Yeah I know this i
 {{{
 for i in `ls samples`; do
     ln -s samples/${i}
+done
 }}}
 
 Edit the app.yaml to set you application id to something appropriate
@@ -94,17 +95,18 @@ mkdir lib
 cd lib
 for i in `ls ../../lib/python2.5/site-packages/`; do
     ln -s ../../lib/python2.5/site-packages/${i}
+done
 }}}
 
 
 Now delete symlinks for the following eggs
 
-* Beaker
-* chameleon.core
-* chameleon.zpt
-* pip
-* setuptools    egg and .pth 
-* WebOb         as it is already in gae
+  * Beaker
+  * chameleon.core
+  * chameleon.zpt
+  * pip
+  * setuptools    egg and .pth 
+  * WebOb         as it is already in gae
 
 #now checkout pages and gae
 {{{
