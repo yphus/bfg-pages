@@ -6,7 +6,7 @@
         
             <div tal:omit-tag="" metal:fill-slot="body">
 <tal:block metal:define-macro="body">
-               <h3 tal:content="context/title_or_id"/>        
+                     
                <div tal:content="structure context/body|nothing"/>
  </tal:block>
             </div>
