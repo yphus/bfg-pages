@@ -31,12 +31,6 @@ def loadSettings(settings='settings.yaml'):
 settings = loadSettings()
 
 
-def public(func):
-    """ """
-    setattr(func,'_is_public',True)
-    return func
-
-
 def admin_required(func):
     """ """
     def _wrapper(context, REQUEST):
