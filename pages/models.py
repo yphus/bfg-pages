@@ -31,7 +31,7 @@ from gae.pagetemplate import get_template
 
 from xml.etree import ElementTree
 
-from gae.utils import public, admin_required, Redirect
+from gae.utils import admin_required, Redirect
 
 from interfaces import IContentish
 import interfaces
@@ -107,6 +107,10 @@ class BaseMixin(object):
     def __name__(self):
         return self.name
     
+    @property
+    def id(self):
+        return self.__name__
+    
     @property    
     def _request(self):
         return get_current_request()
@@ -135,12 +139,10 @@ class BaseMixin(object):
             if hasattr(self,'postApply'):
                 self.postApply(changes) 
             
-            
             self.put()
             
             root = self.getRoot()
             if root != self:
-                
                 root.setcached(str(self.key()),self)       
        
     def getPath(self):
@@ -175,12 +177,9 @@ class BaseMixin(object):
     def title_or_id(self):
         title = getattr(self,'title','')
         if not title or not title.strip():
-            title = self.id
+            title = self.name
         return title
-    
-    @property
-    def id(self):
-        return self.name
+ 
             
     def __repr__(self):
         if self.is_saved():
@@ -203,8 +202,6 @@ class Base(db.Model,BaseMixin,HasActions):
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now=True)
     display_order = db.IntegerProperty(default=5)
-    request = None
-    
     
    
 
@@ -215,8 +212,7 @@ class NonContentishMixin(BaseMixin):
     def clearCache(self):
         """ """
         url = self.absolute_url(self._request)
-        self.root.delcached(url)
-        self.root.delcached(url[:-1])
+        self.root.delcached(url.rstrip('/'))
         self.root.delcached(url+'view')
        
     @property
@@ -279,16 +275,10 @@ class FolderishMixin(db.Model):
     def clearCache(self):
         
         url = self.absolute_url(self._request)
-        self.root.delcached(url)
-        self.root.delcached(url[:-1])
+        self.root.delcached(url.rstrip('/'))
         self.root.delcached(url+"view")
         self.root.delcached(url+":summary")
         self.root.delcached(url+":links")
-                    
-    def absolute_url(self,request):
-        
-        urladapter =  zope.component.getMultiAdapter((self, request),interface=repoze.bfg.interfaces.IContextURL)
-        return urladapter()
         
       
     def contentValues(self,REQUEST=None):
@@ -300,7 +290,7 @@ class FolderishMixin(db.Model):
         else:
             return []
     
-    def contentNames(self,REQUEST=None):
+    def contentNames(self):
         
         return list(self.children_names)
     
@@ -371,7 +361,7 @@ class FolderishMixin(db.Model):
     
     def addContent(self,obj,REQUEST):
 
-        if obj.name in self.contentNames(REQUEST):
+        if obj.name in self.contentNames():
             raise DuplicateName('duplicate name %s'%obj.name)
         
         self.children_keys.append(obj.key())
@@ -381,10 +371,10 @@ class FolderishMixin(db.Model):
         obj.put()
         # Can't set the parent until the object has been saved !! Need to check this again
         obj.setParent(self)
-        
         obj.put()
+        
         self.put()
-        self.save()
+        #self.save()
         self.clearCache()
         
     def delContent(self,name,REQUEST):
@@ -393,16 +383,17 @@ class FolderishMixin(db.Model):
         
         if isinstance(obj,FolderishMixin):
             
-            for i in obj.contentNames(REQUEST):
+            for i in obj.contentNames():
                 obj.delContent(i,REQUEST)
         
         name,key= self.popItem(idx)
         
-        self.save()
+        #self.save()
         self.clearCache()
-        obj.parent_ = None
         
+        obj.parent_ = None
         obj.delete()
+        
         return obj
             
     def moveContent(self,idx_from,idx_to):
@@ -410,13 +401,13 @@ class FolderishMixin(db.Model):
         name,obj = self.popItem(idx_from)
         self.children_names.insert(idx_to,name)
         self.children_keys.insert(idx_to,obj)
-        self.save()
+        self.put()
     
     def popItem(self,idx):
         
         obj = self.children_keys.pop(idx)
         name = self.children_names.pop(idx)
-        #self.save()
+        self.put()
         return name,obj
     
     def __getitem__(self,name):
@@ -426,8 +417,6 @@ class FolderishMixin(db.Model):
         if name in self.children_names:
             idx = self.children_names.index(name)
             result = self._get(self.children_keys[idx])
-            #setattr(result,'request',self.request)
-            
             return result
         else:
             raise KeyError(name)
@@ -452,7 +441,7 @@ class FolderishMixin(db.Model):
 ##        cls.children_names = db.ListProperty(str,default=[])
         
      
-class Root(FolderishMixin, HasActions):
+class Root(FolderishMixin, BaseMixin, HasActions):
     """ """
     
     __models = {}
@@ -479,9 +468,6 @@ class Root(FolderishMixin, HasActions):
     parent_ = None
     environ = None
     
-    @property    
-    def _request(self):
-        return get_current_request()
     
     def __repr__(self):
         return '<Root name="%s">' % self.name
@@ -517,22 +503,22 @@ class Root(FolderishMixin, HasActions):
     def logout_url(self,dest_url):
         return users.create_logout_url(dest_url)
     
-    def applyChanges(self,changes):
-        
-        names = []
-        ispec = list(getObjectSpecification(self).interfaces())[0]
-        for field,value in changes.items():
-            if value is not None:
-                setattr(self,field,value)
-                names.append(field)
-        if names:     
-            if ispec:   
-                description = [zope.lifecycleevent.Attributes(ispec, *names)]
-                    # Send out a detailed object-modified event
-                zope.event.notify(
-                    zope.lifecycleevent.ObjectModifiedEvent(self, *description)) 
-            
-            self.put()       
+##    def applyChanges(self,changes):
+##        
+##        names = []
+##        ispec = list(getObjectSpecification(self).interfaces())[0]
+##        for field,value in changes.items():
+##            if value is not None:
+##                setattr(self,field,value)
+##                names.append(field)
+##        if names:     
+##            if ispec:   
+##                description = [zope.lifecycleevent.Attributes(ispec, *names)]
+##                    # Send out a detailed object-modified event
+##                zope.event.notify(
+##                    zope.lifecycleevent.ObjectModifiedEvent(self, *description)) 
+##            
+##            self.put()       
     
     
     def createContent(self,name,content_type,obj_location,REQUEST,**kwargs): 
@@ -601,16 +587,6 @@ class Root(FolderishMixin, HasActions):
     def __name__(self):
         return ''   
     
-    def getPath(self):
-
-        return model_path(self)
-    
-    def getRoot(self):
-        
-        return find_root(self)
-    
-    root = property(getRoot)
-    
     def getParent(self):
         return None
     
@@ -620,8 +596,6 @@ class Root(FolderishMixin, HasActions):
     def getPathElements(self):
         return [self]
     
-    def title_or_id(self):
-        return self.name.title()
     
 
 class Action(ContentishMixin):
@@ -818,10 +792,10 @@ class Folder(FolderishMixin,ContentishMixin):
     
 
     
-    @public
+    
     def __call__(self,REQUEST=None):
         if self.default_content:
-            if  self.default_content in self.contentNames(REQUEST):
+            if  self.default_content in self.contentNames():
                 obj = self[self.default_content]
                 return obj(REQUEST)
         return super(Folder,self).__call__(REQUEST)
