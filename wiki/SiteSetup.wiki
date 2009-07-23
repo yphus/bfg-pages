@@ -1,4 +1,4 @@
-#summary Initial Setup of a bfg-pages datastore
+#summary Initial Setup of a bfg-pages datastore (make sure you do the Install first)
 
 = Introduction =
 
@@ -41,5 +41,3 @@ http://myserver:port/contents
 }}}
 
 Some usage docs will follow soon.
-
-
