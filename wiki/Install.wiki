@@ -130,7 +130,7 @@ python2.5 ~/google_appengine/dev_appserver.py --datastore_path=./repoze.ds ./myi
 
 Note we are above the actual gae instance.  That way when we are uploading we don't send things like the dev datatstore
 
-In theory you can connect to the server and try stuff.  See site setup and use for more details 
+In theory you can connect to the server and try stuff.  See [SiteSetup] and use for more details 
 
 # If you want to upload to your gae live instance then 
 {{{
