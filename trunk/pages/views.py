@@ -21,7 +21,7 @@ import pages
 
 @admin_required
 def setup_view(context, request):
-    data = setup.start_setup(request)
+    data = setup_site.start_setup(request)
     return render_template_to_response('setup.pt',
                                        request = request,
                                        context = context,

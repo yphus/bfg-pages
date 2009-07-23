@@ -45,7 +45,7 @@ def get_cache():
     env["wsgi.multithread"] = False
     env["wsgi.multiprocess"] = False
     req = Request(env)
-    cached_resp = memcache.get(req.path_url)
+    cached_resp = memcache.get(req.path_url.rstrip('/'))
     
     if cached_resp:
         def cache_app(env,start_resp):
@@ -69,14 +69,6 @@ def cacheoutput(func):
         return output    
             
     return _wrapper
-
-##def init_editing(packages):
-##    
-##    logging.debug('Loading editing')
-##    sm = getSiteManager()
-##    for zcmlfile,packagespace in packages:
-##        populateRegistry(sm,zcmlfile,packagespace)
-##    logging.debug('Loaded editing')
 
 
 def make_time_header(thetime=None,add=0):
