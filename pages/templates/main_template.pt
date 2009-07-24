@@ -17,7 +17,7 @@
         <link rel="stylesheet" type="text/css" href="/css/stylesheet.css" />
         <tal:block metal:define-slot="additional_header_info"/>    
         <base metal:define-slot="base_href" tal:attributes="href python:context.absolute_url(request)" />
-        <tal:block tal:content="structure root/analytics_code"/>
+        
 
     </head>
 
@@ -46,5 +46,6 @@
             </div>
 
         </div>
+        <tal:block tal:content="structure root/analytics_code"/>
     </body>
 </html>

@@ -64,7 +64,8 @@ def cacheoutput(func):
     def _wrapper(context, REQUEST):
         output = func(context, REQUEST)
         if not getattr(REQUEST.principal,'ADMIN',False):
-            key=REQUEST.path_url
+            key=REQUEST.path_url.rstrip('/')
+            
             memcache.set(key,output,86400)
         return output    
             

@@ -66,6 +66,24 @@
         </div>
     </div>
 
+       
+    <div tal:omit-tag="" metal:define-macro="contents_nav" 
+         tal:define="items python:[i for i in context.getParent().content_summary(request) if not i.get('hidden',False)]"
+         tal:condition="python:len(items) > 1" tal:on-error="nothing">
+      <div id="body-right-content" >
+         <h3>Contents</h3>
+          
+           <ul>
+              <li tal:repeat="item items">
+                    <a href="#" tal:attributes="href string:${item/url}view;
+                                                title item/title" tal:content="item/title"/>
+              </li>
+           </ul>
+           &nbsp;
+        
+      </div>
+    </div>
+
     <div tal:omit-tag="" metal:define-macro="admin_actions">
       
       <tal:block tal:condition="request/principal/ADMIN|nothing" tal:on-error="string:">
