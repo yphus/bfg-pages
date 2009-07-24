@@ -11,17 +11,19 @@ from gae.utils import admin_required, BREAKPOINT
 from gae.utils import Redirect,admin_required
 
 from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
-from zope.configuration.xmlconfig import xmlconfig
 
 import interfaces
 import models
 from utils import cacheoutput
-from pages.utils import make_time_header
+
 import pages
-from pages import setup_site
+from pages.utils import make_time_header
+
+
 
 @admin_required
 def setup_view(context, request):
+    from pages import setup_site
     data = setup_site.start_setup(request)
     return render_template_to_response('setup.pt',
                                        request = request,
