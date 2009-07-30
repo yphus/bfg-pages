@@ -174,6 +174,14 @@ class BaseMixin(object):
         results.reverse()
         return results
     
+    @property
+    def path_elements(self):
+        paths = [] 
+        pe = self.getPathElements()
+        for i in pe:
+            paths.append(i.getPath())
+        return paths
+    
     def title_or_id(self):
         title = getattr(self,'title','')
         if not title or not title.strip():
@@ -241,6 +249,7 @@ class ContentishMixin(Base):
     implements(interfaces.IContent)
     
     parent_ = db.ReferenceProperty()
+    path_elements_ = db.StringListProperty(default=[])
     
     def clearCache(self):
         """ """
@@ -264,6 +273,12 @@ class ContentishMixin(Base):
     def parent(self):
         return self.__parent__
 
+
+        
+    def postApply(self,changes): 
+        self.path_elements_ = self.path_elements
+        
+        
         
 class FolderishMixin(db.Model):
     
@@ -360,14 +375,14 @@ class FolderishMixin(db.Model):
         root.setcached(cache_key,results)
         return results 
     
-    def addContent(self,obj,REQUEST):
+    def addContent(self,obj,name,REQUEST):
 
-        if obj.name in self.contentNames():
-            raise DuplicateName('duplicate name %s'%obj.name)
+        if name in self.contentNames():
+            raise DuplicateName('duplicate name %s'%name)
         
         self.children_keys.append(obj.key())
         
-        self.children_names.append(obj.name)
+        self.children_names.append(name)
         
         obj.put()
         # Can't set the parent until the object has been saved !! Need to check this again
@@ -465,6 +480,7 @@ class Root(FolderishMixin, BaseMixin, HasActions):
     analytics_code=db.TextProperty()
     verification_code=db.TextProperty()
     copyright_statement = db.StringProperty(default='')
+    path_elements_ = db.StringListProperty(default=['/'])
     
     parent_ = None
     environ = None
@@ -534,16 +550,20 @@ class Root(FolderishMixin, BaseMixin, HasActions):
             obj_location = find_model(self,obj_location)
            
         newobj = klass(name=name)
-        newobj.applyChanges(kwargs)
         newobj.put()
-        
+        # Hook content up to traveral machinery locations etc.. before
+        # applying all the data
         if IContentish.providedBy(newobj):
             if obj_location:
-                obj_location.addContent(newobj,REQUEST) 
+                obj_location.addContent(newobj,name,REQUEST) 
                 zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(self)) 
                 self.setcached(str(obj_location.getPath()),None)
         elif isinstance(newobj,polymodel.PolyModel):
             newobj.__parent__ = obj_location    
+            
+        newobj.applyChanges(kwargs)
+        newobj.put()
+            
         return newobj   
      
 
@@ -674,7 +694,8 @@ class File(ContentishMixin):
         self.filename = changes['file'].filename
         self.mimetype = changes['file'].mimetype
     
-    def postApply(self,changes):        
+    def postApply(self,changes):  
+        super(File,self).postApply(changes)      
         if changes.get('file',None):
             if changes['file'].file:
                 self.update_file(changes)
