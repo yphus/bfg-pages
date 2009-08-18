@@ -111,7 +111,7 @@ class BaseMixin(object):
     def id(self):
         return self.__name__
     
-    @property    
+     
     def _request(self):
         return get_current_request()
         
@@ -213,13 +213,13 @@ class Base(db.Model,BaseMixin,HasActions):
     
    
 
-class NonContentishMixin(BaseMixin):
+class NonContentishMixin(db.Model,BaseMixin):
     """ """
     implements(interfaces.INonContentish)
     
     def clearCache(self):
         """ """
-        url = self.absolute_url(self._request)
+        url = self.absolute_url(self._request())
         self.root.delcached(url.rstrip('/'))
         self.root.delcached(url+'view')
        
@@ -253,7 +253,7 @@ class ContentishMixin(Base):
     
     def clearCache(self):
         """ """
-        url = self.absolute_url(self._request)
+        url = self.absolute_url(self._request())
         self.root.delcached(url)
         self.root.delcached(url[:-1])
         self.root.delcached(url+'view')
@@ -289,7 +289,7 @@ class FolderishMixin(db.Model):
 
     def clearCache(self):
         
-        url = self.absolute_url(self._request)
+        url = self.absolute_url(self._request())
         path = self.getPath().rstrip()
         self.root.delcached(url.rstrip('/'))
         self.root.delcached(url+"view")
@@ -316,7 +316,7 @@ class FolderishMixin(db.Model):
         kind = key.kind()
         return self.getRoot().models()[kind].get(key)
     
-    def contentItems(self,REQUEST):
+    def contentItems(self,REQUEST=None):
         
         for i in self.contentValues(REQUEST):            
             yield i.name,i
@@ -391,7 +391,8 @@ class FolderishMixin(db.Model):
         
         self.put()
         #self.save()
-        self.clearCache()
+        if REQUEST is not None:
+            self.clearCache()
         
     def delContent(self,name,REQUEST):
         idx = self.children_names.index(name)
@@ -405,7 +406,8 @@ class FolderishMixin(db.Model):
         name,key= self.popItem(idx)
         
         #self.save()
-        self.clearCache()
+        if REQUEST:
+            self.clearCache()
         
         obj.parent_ = None
         obj.delete()
@@ -593,7 +595,7 @@ class Root(FolderishMixin, BaseMixin, HasActions):
         return memcache.get(key)
     
     def setcached(self,key,obj,timeout=36000):
-
+        
         memcache.set(key,obj,timeout)
         
     def delcached(self,key):
@@ -713,7 +715,7 @@ class Image(File):
     
     def clearCached(self):
         super(Image,self).clearCached()
-        url = self.absolute_url(self._request)
+        url = self.absolute_url(self._request())
         self.root.delcached(url+"thumbnail")
         
     
@@ -1064,7 +1066,7 @@ def getRoot(environ=None):
     if 'root' in Root._v_cache:
         root= Root._v_cache['root']  
     else:
-        r= list(Root.all())
+        r= list(Root.all().fetch(1))
         if r:
             Root._v_cache['root'] = r[0]
             root= Root._v_cache['root']
