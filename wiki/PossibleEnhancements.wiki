@@ -1,4 +1,4 @@
-# Possible/Planned Enhancements to bfg-pages.
+#possible and/or planned enhancements to bfg-pages.
 
 = Introduction =
 
