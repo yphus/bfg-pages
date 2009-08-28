@@ -28,9 +28,10 @@ from google.appengine.api import images
 import schemaish.type
 
 from gae.pagetemplate import get_template
-
-from xml.etree import ElementTree
-
+try:
+    from xml.etree import ElementTree
+except:
+    pass
 from gae.utils import admin_required, Redirect
 
 from interfaces import IContentish
@@ -216,6 +217,9 @@ class Base(db.Model,BaseMixin,HasActions):
 class NonContentishMixin(db.Model,BaseMixin):
     """ """
     implements(interfaces.INonContentish)
+    
+    created = db.DateTimeProperty(auto_now_add=True)
+    modified = db.DateTimeProperty(auto_now=True)
     
     def clearCache(self):
         """ """
