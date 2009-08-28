@@ -24,7 +24,10 @@ def loadSettings(settings='settings.yaml'):
     
     x= _modsettings
     if not x:
-        _modsettings.update(load(open(settings,'r').read()))
+        try:
+            _modsettings.update(load(open(settings,'r').read()))
+        except IOError:
+            pass
         
     return _modsettings
 
