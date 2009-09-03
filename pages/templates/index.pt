@@ -11,7 +11,8 @@
                   
                </div>
                <div id="body-right-content" class="yui-u">
-                  <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/news"/> 
+                  <!-- <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/news"/> -->
+                  <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/portlets"/> 
                </div>
             </div>
         </tal:block>

@@ -48,7 +48,12 @@ class IPage(IContentish):
 class IAction(IContentish):
     
     """Action"""
-       
+
+class IPortlet(IAction):
+    
+    """Viewlet"""
+class IPortletContext(Interface):
+    """ portlet context """              
 
 class IQueryView(IContentish):
     """Query entity"""

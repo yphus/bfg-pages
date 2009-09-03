@@ -205,6 +205,11 @@ class ActionStructure(BaseStructure):
         }
     )
 
+class PortletStructure(ActionStructure):
+    
+    portlet_template = schemaish.String()
+    _widgets = copy.copy(ActionStructure._widgets)
+    
 
 class QueryViewStructure(BaseStructure):
     

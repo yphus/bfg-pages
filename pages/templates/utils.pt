@@ -186,5 +186,10 @@
          </div>
      </div>
     </div>
+
+
+    <div metal:define-macro="portlets">
+       <tal:block tal:content="structure python: root.portlets(context,request,'samples')"/>
+    </div>
 </body>
 </html> 

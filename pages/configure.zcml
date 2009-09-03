@@ -20,6 +20,14 @@
         view=".views.setup_view"
         name="setup" />
 
+    <view for=".interfaces.IPortletContext"
+        view=".views.portlet_view"
+        name="sample1" />
+
+    <view for=".interfaces.IPortletContext"
+        view=".views.portlet_view"
+        name="sample2" />
+
     <view
         for=".interfaces.IContent"
         view=".views.content_view"
@@ -160,6 +168,12 @@
     <adapter
         factory="pages.schema.ActionStructure"
         for="pages.interfaces.IAction"
+        provides="pages.schema.IStructure"/>  
+
+    
+    <adapter
+        factory="pages.schema.PortletStructure"
+        for="pages.interfaces.IPortlet"
         provides="pages.schema.IStructure"/>  
 
 </configure>
