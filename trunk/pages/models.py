@@ -144,6 +144,7 @@ class BaseMixin(object):
             
             root = self.getRoot()
             if root != self:
+                
                 root.setcached(str(self.key()),self)       
        
     def getPath(self):
@@ -214,7 +215,7 @@ class Base(db.Model,BaseMixin,HasActions):
     
    
 
-class NonContentishMixin(db.Model,BaseMixin):
+class NonContentishMixin(BaseMixin):
     """ """
     implements(interfaces.INonContentish)
     
@@ -273,9 +274,9 @@ class ContentishMixin(Base):
     def __parent__(self):
         return self.parent_
     
-    @property
-    def parent(self):
-        return self.__parent__
+##    @property
+##    def parent(self):
+##        return self.__parent__
 
 
         
