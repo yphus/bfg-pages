@@ -1,15 +1,15 @@
-<html metal:use-macro="templates/main_template/macros/main">
+<html >
    <head>
     
    </head>
    <body>
         <tal:block metal:define-macro="body">
             
-            <div metal:fill-slot="body">
+            <div >
          
 
                <h3 tal:content="context/title_or_id"/> 
-               <div>Kind: <tal:block tal:content="context/kind"/>
+               <div>Kind: <tal:block tal:content="context/kind"/></div>
                <div>Description: <div tal:content="context/description"/></div>
                
                
