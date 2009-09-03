@@ -144,8 +144,9 @@ class BaseMixin(object):
     def _request(self):
         return get_current_request()
         
-    def absolute_url(self,request):
-   
+    def absolute_url(self,request=None):
+        if request is None:
+            request = self._request()
         adp = zope.component.getMultiAdapter((self, request),interface=repoze.bfg.interfaces.IContextURL)
         return str(adp())
     
