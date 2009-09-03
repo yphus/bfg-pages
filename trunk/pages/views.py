@@ -153,6 +153,32 @@ def root_view(context, request):
                                        request = request,
                                        context = context,
                                        )
+                                       
+class portlet_view(object):
+    template = "sample.pt"
+    
+    def __init__(self, context, request):
+        self.context = context.context
+        self.portlet = context.portlet
+        self.request = request
+        self.view = self
+        self.root = self.context.getRoot()
+        
+    def __call__(self):
+        
+        template = self.template
+        
+        if self.portlet.portlet_template:
+            template = self.portlet.portlet_template
+      
+        return render_template(template,
+            request=self.request,
+            context=self.context,
+            portlet=self.portlet,
+            view=self,
+            root=self.root)
+
+                                       
 @admin_required
 def contents(context, request):
     

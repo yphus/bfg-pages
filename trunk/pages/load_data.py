@@ -19,7 +19,8 @@ data = [
 (models.Folder, [
           {'name':'news','key_name':'news','parent_':'/','display_order':15}, 
           {'name':'galleries','key_name':'galleries','parent_':'/','display_order':9}, 
-          {'name':'actions','key_name':'actions','parent_':'/','display_order':99},] , "FOLDERS",[],lambda x: not list(models.Folder.all()),
+          {'name':'actions','key_name':'actions','parent_':'/','display_order':99},
+          {'name':'portlets','key_name':'portlets','parent_':'/','display_order':99},] , "FOLDERS",[],lambda x: not list(models.Folder.all()),
 ),
           
 (models.Action,[{ 'name':'view_', 'label':'View','parent_':'/actions',
@@ -92,7 +93,12 @@ data = [
                     'guard_expr':"python: context.name == 'actions'",'content':['Folder',],
                     'group':'admin','class':'yuimenuitemlabel'
                     },
-                    
+                { 'name':'add_portets_', 'label':'Add Portlet',
+                    'expr':"python: context.absolute_url(request)+'add?content=Portlet'",
+                    'parent_':'/actions',
+                    'guard_expr':"python: context.name == 'portlets'",'content':['Folder',],
+                    'group':'admin','class':'yuimenuitemlabel'
+                    },    
                 { 'name':'add_query_', 'label':'Add Query',
                     'expr':"python: context.absolute_url(request)+'add?content=QueryView'",
                     'parent_':'/actions',

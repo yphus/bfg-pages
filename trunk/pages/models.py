@@ -75,7 +75,35 @@ class HasActions(object):
         root.setcached(cache_key,results)
         
         return results
-  
+    
+def getPortlets(context,request,group=None):
+    root = context.getRoot()
+        
+    cache_key = 'portlet:%s:%s:%s' % (str(context.getPath()),str(group),str(users.get_current_user()))
+
+    cached_result = root.getcached(cache_key)
+
+    if cached_result and not getattr(request.principal,'ADMIN',False):
+        return cached_result 
+
+    star_portlets = Portlet.all().filter('content = ',"*")
+    kind_portlets = Portlet.all().filter('content = ',context.kind())
+
+    if group:
+        star_portlets = star_portlets.filter('group = ',group)
+        kind_portlets = kind_portlets.filter('group = ',group)
+
+    results = []
+    for portlet in list(star_portlets) + list(kind_portlets):
+        
+        if portlet.allowed(context,request):
+            results.append( portlet.resolve(context,request))
+    results = '\n'.join(results)
+    
+    root.setcached(cache_key,results)
+
+    return results   
+
 class FileTypeBlobProperty(db.BlobProperty):
     def validate(self,value):
         """Coerce values (except None) to self.data_type.
@@ -142,10 +170,10 @@ class BaseMixin(object):
             
             self.put()
             
-            root = self.getRoot()
-            if root != self:
-                
-                root.setcached(str(self.key()),self)       
+##            root = self.getRoot()
+##            if root != self:
+##                
+##                root.setcached(str(self.key()),self)       
        
     def getPath(self):
         return model_path(self)
@@ -504,6 +532,8 @@ class Root(FolderishMixin, BaseMixin, HasActions):
     def get_model(self,type_name):
         return self.__models.get(type_name)
     
+    def portlets(self,context,REQUEST,group=None):
+        return getPortlets(context,REQUEST,group)
     
     def heading_tabs(self,REQUEST,group="admin"):
         
@@ -523,6 +553,8 @@ class Root(FolderishMixin, BaseMixin, HasActions):
         for i in Folder.all().filter('heading_tab = ',True).order('display_order'):
             result.append(template % (i.absolute_url(REQUEST),i.name,i.title_or_id(),i.title_or_id()))
         return result
+    
+
     
     def logout_url(self,dest_url):
         return users.create_logout_url(dest_url)
@@ -599,8 +631,14 @@ class Root(FolderishMixin, BaseMixin, HasActions):
         
         return memcache.get(key)
     
+    def _iterate_props(self,obj):
+        results = []
+        for i in dir(obj):
+            results.append((i, type(getattr(obj,i))))
+        return results
+    
     def setcached(self,key,obj,timeout=36000):
-        
+        #BREAKPOINT()
         memcache.set(key,obj,timeout)
         
     def delcached(self,key):
@@ -673,7 +711,40 @@ class Action(ContentishMixin):
             'label':self.label}
         
         return result
+
+class PortletContext(object):
+    implements(interfaces.IPortletContext)
     
+    def __init__(self,context,portlet):
+        self.context = context
+        self.portlet = portlet
+    
+    
+class Portlet(Action):
+    content_type = "portlet" 
+    _template = "portlet.pt"
+    
+    portlet_template = db.StringProperty()
+    
+    implements(interfaces.IPortlet)
+
+    def resolve(self, context, request):
+        
+        #BREAKPOINT()
+        
+        container = context
+        if context.kind() not in ['Folder','Root']:    
+            container = context.getParent()
+            
+        ac = utils.ActionContext(request,{'context':context,'object':context,'request':request,'container':container})    
+        expr = self.engine.compile(self.expr)       
+        name = expr(ac)
+
+        result = zope.component.queryMultiAdapter((PortletContext(context,self),request),repoze.bfg.interfaces.IView,name)
+        if result is None:
+            result = ""
+        return result
+
 
 class File(ContentishMixin):
     """ """
@@ -1060,6 +1131,7 @@ Root.register_models(News)
 Root.register_models(File)
 Root.register_models(Image)
 Root.register_models(Action)
+Root.register_models(Portlet)
 Root.register_models(QueryView)
 Root.register_models(PicassaGallery)
 
