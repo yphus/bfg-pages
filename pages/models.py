@@ -1,6 +1,4 @@
 
-
-
 import sys
 import os
 import datetime
@@ -41,6 +39,7 @@ from gae.utils import BREAKPOINT
 
 import utils
 import getimageinfo
+#import logging
 
 class DuplicateName(Exception):
     pass
@@ -48,7 +47,7 @@ class DuplicateName(Exception):
 
 class HasActions(object):
     
-    def getActions(self,request,group=None):
+    def getActions(self,request,group=None,notag=False):
         
         root = self.getRoot()
         
@@ -70,13 +69,13 @@ class HasActions(object):
         for action in list(star_actions) + list(kind_actions):
             
             if action.allowed(self,request):
-                results.append( action.resolve(self,request))
+                results.append( action.resolve(self,request,notag) )
 
         root.setcached(cache_key,results)
         
         return results
     
-def getPortlets(context,request,group=None):
+def getPortlets(context,request,group=None,notag=False):
     root = context.getRoot()
         
     cache_key = 'portlet:%s:%s:%s' % (str(context.getPath()),str(group),str(users.get_current_user()))
@@ -97,7 +96,7 @@ def getPortlets(context,request,group=None):
     for portlet in list(star_portlets) + list(kind_portlets):
         
         if portlet.allowed(context,request):
-            results.append( portlet.resolve(context,request))
+            results.append( portlet.resolve(context,request,notag))
     results = '\n'.join(results)
     
     root.setcached(cache_key,results)
@@ -700,7 +699,7 @@ class Action(ContentishMixin):
             return True
         
 
-    def resolve(self, context, request):
+    def resolve(self, context, request, notag=False):
         
         container = context
         if context.kind() not in ['Folder','Root']:    
@@ -708,10 +707,20 @@ class Action(ContentishMixin):
             
         ac = utils.ActionContext(request,{'context':context,'object':context,'request':request,'container':container})    
         expr = self.engine.compile(self.expr)       
-        result = """<a href="%(href)s" class="%(class)s" name="%(name)s" title="%(label)s">%(label)s</a>""" % {'class':self.css_class, 
-            'href':expr(ac),
-            'name':self.name,
-            'label':self.label}
+        #logging.info('notag: %s' % notag)
+        if notag:
+            result = {'class': self.css_class,
+                      'href':expr(ac),
+                      'url':expr(ac),
+                      'name':self.name,
+                      'label':self.label,
+                      'title':self.title,
+                      'description':self.description}
+        else:
+            result = """<a href="%(href)s" class="%(class)s" name="%(name)s" title="%(label)s">%(label)s</a>""" % {'class':self.css_class, 
+                                      'href':expr(ac),
+                                      'name':self.name,
+                                      'label':self.label}
         
         return result
 
