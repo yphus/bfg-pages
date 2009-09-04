@@ -600,7 +600,7 @@ class Root(FolderishMixin, BaseMixin, HasActions):
                 obj_location.addContent(newobj,name,REQUEST) 
                 zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(self)) 
                 self.setcached(str(obj_location.getPath()),None)
-        elif isinstance(newobj,polymodel.PolyModel):
+        elif isinstance(newobj,NonContentishMixin):
             newobj.__parent__ = obj_location    
             
         newobj.applyChanges(kwargs)
@@ -966,7 +966,7 @@ class QueryView(FolderishMixin,ContentishMixin):
             
         
         if obj:
-            if isinstance(obj,NonContentish):
+            if isinstance(obj,NonContentishMixin):
                 setattr(obj,'__parent__',self)
             return obj
         else:
@@ -1001,7 +1001,7 @@ class QueryView(FolderishMixin,ContentishMixin):
 
         for i in query:
             summary = {}
-            if isinstance(i,polymodel.PolyModel):
+            if isinstance(i,NonContentishMixin):
                 i.__parent__ = self
             if not getattr(i,'hidden',False):
                 url = i.absolute_url(request)
