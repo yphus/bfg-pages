@@ -39,7 +39,7 @@ from gae.utils import BREAKPOINT
 
 import utils
 import getimageinfo
-#import logging
+import logging
 
 class DuplicateName(Exception):
     pass
@@ -707,7 +707,16 @@ class Action(ContentishMixin):
             
         ac = utils.ActionContext(request,{'context':context,'object':context,'request':request,'container':container})    
         expr = self.engine.compile(self.expr)       
-        #logging.info('notag: %s' % notag)
+        try:
+            x = expr(ac)
+        except AttributeError:
+            # Don't break on invalid expression.
+            # Note: Change to log stack trace.
+            logging.error('Broken expression on action "%s"' % self.name)
+            if notag:
+                return {}
+            else:
+                return ''
         if notag:
             result = {'class': self.css_class,
                       'href':expr(ac),
