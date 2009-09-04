@@ -251,6 +251,8 @@ class NonContentishMixin(BaseMixin):
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now=True)
     
+    
+    
     def clearCache(self):
         """ """
         url = self.absolute_url(self._request())
@@ -964,8 +966,8 @@ class QueryView(FolderishMixin,ContentishMixin):
             
         
         if obj:
-            if isinstance(obj,polymodel.PolyModel):
-                obj.__parent__ = self
+            if isinstance(obj,NonContentish):
+                setattr(obj,'__parent__',self)
             return obj
         else:
             raise KeyError('Object not found')
