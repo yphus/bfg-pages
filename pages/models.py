@@ -93,8 +93,9 @@ def getPortlets(context,request,group=None,notag=False):
         kind_portlets = kind_portlets.filter('group = ',group)
 
     results = []
-    for portlet in list(star_portlets) + list(kind_portlets):
-        
+    all_portlets = list(star_portlets) + list(kind_portlets)
+    all_portlets.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
+    for portlet in all_portlets:
         if portlet.allowed(context,request):
             results.append( portlet.resolve(context,request,notag))
     results = '\n'.join(results)
