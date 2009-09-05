@@ -749,7 +749,7 @@ class Portlet(Action):
     
     implements(interfaces.IPortlet)
 
-    def resolve(self, context, request):
+    def resolve(self, context, request, notag=False):
         
         #BREAKPOINT()
         
