@@ -356,7 +356,7 @@ class FolderishMixin(db.Model):
     
     def _get(self,key):
         cache_key = (self.path_elements_,key)
-        cached_result = root.getcached(cache_key)
+        cached_result = self.root.getcached(cache_key)
         import pdb
         pdb.set_trace()
         if cached_result:
