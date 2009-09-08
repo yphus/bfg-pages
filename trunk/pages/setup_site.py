@@ -78,17 +78,16 @@ def create_site(i,request):
             except Exception,e:
                 info(str(e))
         else:
-           
+            
             x=klass(**args)
             x.put()
             
     return results
      
       
-def start_setup(request):
+def start_setup(request,data=load_data.data):
     if users.is_current_user_admin():
         root = getRoot(request)
-        data = load_data.data
         action = request.params.get('action')
         data_request=request.params.get('data',None)
         #BREAKPOINT()
