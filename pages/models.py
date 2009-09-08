@@ -140,6 +140,9 @@ class BaseMixin(object):
     def id(self):
         return self.__name__
     
+        
+    def traverse(self,path):
+        return find_model(self,unquote(path))
      
     def _request(self):
         return get_current_request()
@@ -244,12 +247,9 @@ class Base(db.Model,BaseMixin,HasActions):
     
    
 
-class NonContentishMixin(BaseMixin):
+class NonContentishMixin(db.Model):
     """ """
     implements(interfaces.INonContentish)
-    
-    created = db.DateTimeProperty(auto_now_add=True)
-    modified = db.DateTimeProperty(auto_now=True)
     
     
     
@@ -480,9 +480,7 @@ class FolderishMixin(db.Model):
             return True
         else:
             return False
-    
-    def traverse(self,path):
-        return find_mode(self,unquote(path))
+
         
     
     @property    

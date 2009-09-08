@@ -16,9 +16,9 @@
         for="zope.lifecycleevent.ObjectCreatedEvent"
         handler=".subscribers.manage_cache"/>
 
-    <view for=".models.Root"
+    <!-- view for=".models.Root"
         view=".views.setup_view"
-        name="setup" />
+        name="setup" / -->
 
     <view for=".interfaces.IPortletContext"
         view=".views.portlet_view"
