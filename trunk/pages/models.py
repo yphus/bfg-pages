@@ -355,10 +355,17 @@ class FolderishMixin(db.Model):
     
     
     def _get(self,key):
-        
+        cache_key = (self.path_elements_,key)
+        cached_result = root.getcached(cache_key)
+        import pdb
+        pdb.set_trace()
+        if cached_result:
+            return cached_result
         kind = key.kind()
-        return self.getRoot().models()[kind].get(key)
-    
+        result= self.getRoot().models()[kind].get(key)
+        root.setcached(cache_key,result)
+        return result
+        
     def contentItems(self,REQUEST=None):
         
         for i in self.contentValues(REQUEST):            
