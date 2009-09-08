@@ -162,6 +162,23 @@ class Base(db.Model):
         return self.name
     
     @property
+    def __name__(self):
+        return self.name   
+        
+       
+    def __get_parent__(self):
+        p= getattr(self,'_v_parent',None)
+        if p is None:
+            p=getattr(self,'parent_',None)
+        return p
+    
+    def __set_parent__(self,parent):
+        setattr(self,'_v_parent',parent)
+        setattr(self,'_v_parent',parent)
+    
+    __parent__ = property(__get_parent__,__set_parent__)
+       
+    @property
     def id(self):
         return self.__name__
         
@@ -219,14 +236,7 @@ class Base(db.Model):
     
     def getParent(self):
         result = None
-        try:
-            result= getattr(self,'parent_',None) 
-            if not hasattr(result,'request'):
-                setattr(result,'request',self.request)
-
-        except:
-            logging.error('Failed tot get parent for "%s"' % str(self))
-            pass
+        result= getattr(self,'parent_',None) 
         return result 
     
     def getPathElements(self):
@@ -305,14 +315,9 @@ class ContentishMixin(Base,HasActions):
     def setParent(self,obj):
         self.parent_ = obj
      
-    @property
-    def __name__(self):
-        return self.name   
+    
         
-    @property    
-    def __parent__(self):
-        return self.parent_
-        
+    
     def postApply(self,changes): 
         self.path_elements_ = self.path_elements
         
@@ -920,6 +925,7 @@ class QueryView(FolderishMixin,ContentishMixin):
     _template = "query"
     body = db.TextProperty(default=u'')
     hidden=db.BooleanProperty(default=False)
+    reparent=db.BooleanProperty(default=False)
     find_kind = db.StringProperty()
     filters = db.TextProperty(default=u'')
     order_by = db.TextProperty(default=u'')
@@ -973,7 +979,7 @@ class QueryView(FolderishMixin,ContentishMixin):
             
         
         if obj:
-            if isinstance(obj,NonContentishMixin):
+            if isinstance(obj,NonContentishMixin) or self.reparent:
                 setattr(obj,'__parent__',self)
             return obj
         else:
@@ -1008,8 +1014,11 @@ class QueryView(FolderishMixin,ContentishMixin):
 
         for i in query:
             summary = {}
-            if isinstance(i,NonContentishMixin):
+            #BREAKPOINT()
+            if isinstance(i,NonContentishMixin) or self.reparent:
+                
                 i.__parent__ = self
+            
             if not getattr(i,'hidden',False):
                 url = i.absolute_url(request)
                 
