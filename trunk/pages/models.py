@@ -195,6 +195,7 @@ class BaseMixin(object):
                 setattr(result,'request',self.request)
 
         except:
+            logging.error('Failed tot get parent for "%s"' % str(self))
             pass
         return result 
     
