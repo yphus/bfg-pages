@@ -216,6 +216,7 @@ class QueryViewStructure(BaseStructure):
     find_kind = schemaish.String(validator=validatish.Required())
     body = schemaish.String()
     hidden = schemaish.Boolean()
+    reparent = schemaish.Boolean()
     filters = schemaish.String()
     order_by = schemaish.String()
     group_by = schemaish.String()
@@ -227,6 +228,7 @@ class QueryViewStructure(BaseStructure):
             'args':[],
             'kwargs':{'cols':80,'rows':25,'empty':''},},
          'hidden': {'widget':formish.Checkbox},
+         'reparent': {'widget':formish.Checkbox},
          'filters':{'widget':formish.TextArea,
             'args':[],
             'kwargs':{'cols':80,'rows':5,'empty':''},},
