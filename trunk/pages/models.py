@@ -325,6 +325,8 @@ class ContentishMixin(Base,HasActions):
         
 class FolderishMixin(db.Model):
     
+    implements(interfaces.IFolderish)
+    
     children_keys = db.ListProperty(db.Key,default=[])
     children_names = db.StringListProperty(str,default=[])
     
@@ -394,7 +396,8 @@ class FolderishMixin(db.Model):
                 'description':description,
                 'kind':i.kind(),
                 'hidden':getattr(i,'hidden',False),
-                'modified': i.modified}
+                'modified': i.modified,
+                'isfolder':interfaces.IFolderish.providedBy(i)}
             summary['heading_tab'] = getattr(i,'heading_tab',False)
             results.append(summary)
             

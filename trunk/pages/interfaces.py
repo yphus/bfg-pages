@@ -7,7 +7,9 @@ class IStructure(Interface):
  
 class IContent(Interface):
     """ Content objects"""
-
+    
+class IFolderish(Interface):
+    """ Objects that are folderish"""
 
 class IContentish(Interface):
     """Base for all content types that support containment and traversal"""

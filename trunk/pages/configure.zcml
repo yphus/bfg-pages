@@ -53,7 +53,7 @@
 
 
     <view
-        for=".interfaces.IFolder"
+        for=".interfaces.IFolderish"
         view=".views.contents"
         name="contents"/>
 
