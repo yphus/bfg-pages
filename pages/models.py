@@ -130,7 +130,32 @@ class FileTypeBlobProperty(db.BlobProperty):
           
         return value
 
-class BaseMixin(object):
+
+class Reference(db.Model):
+
+    """description"""
+
+    implements(interfaces.IReference)
+
+
+#===== BEGIN CUSTOM CODE HERE [after_implements] =====
+#===== END CUSTOM CODE HERE [after_implements] =====
+
+# Attributes
+
+    src_id = db.StringProperty()
+    target_id = db.StringProperty()
+    reference_type = db.StringProperty()
+
+class Base(db.Model):
+    
+    _template = "view.pt"
+    
+    name = db.StringProperty()
+    title = db.StringProperty(default='')
+    description = db.TextProperty(default='')
+    created = db.DateTimeProperty(auto_now_add=True)
+    modified = db.DateTimeProperty(auto_now=True)
     
     @property
     def __name__(self):
@@ -139,7 +164,12 @@ class BaseMixin(object):
     @property
     def id(self):
         return self.__name__
-    
+        
+    def clearCache(self):
+        """ """
+        url = self.absolute_url(self._request())
+        self.root.delcached(url.rstrip('/'))
+        self.root.delcached(url+'view')
         
     def traverse(self,path):
         return find_model(self,unquote(path))
@@ -234,31 +264,14 @@ class BaseMixin(object):
     def template(self):
         return self._template
     
-
-class Base(db.Model,BaseMixin,HasActions):
-    
-    _template = "view.pt"
-    
-    name = db.StringProperty()
-    title = db.StringProperty(default='')
-    description = db.TextProperty(default='')
-    created = db.DateTimeProperty(auto_now_add=True)
-    modified = db.DateTimeProperty(auto_now=True)
-    display_order = db.IntegerProperty(default=5)
-    
    
 
-class NonContentishMixin(db.Model):
+class NonContentishMixin(Base):
     """ """
     implements(interfaces.INonContentish)
     
     
-    
-    def clearCache(self):
-        """ """
-        url = self.absolute_url(self._request())
-        self.root.delcached(url.rstrip('/'))
-        self.root.delcached(url+'view')
+
        
     @property
     def __name__(self):
@@ -281,19 +294,13 @@ class NonContentishMixin(db.Model):
         return url
     
     
-class ContentishMixin(Base):
+class ContentishMixin(Base,HasActions):
     
     implements(interfaces.IContent)
     
     parent_ = db.ReferenceProperty()
     path_elements_ = db.StringListProperty(default=[])
-    
-    def clearCache(self):
-        """ """
-        url = self.absolute_url(self._request())
-        self.root.delcached(url)
-        self.root.delcached(url[:-1])
-        self.root.delcached(url+'view')
+    display_order = db.IntegerProperty(default=5)
     
     def setParent(self,obj):
         self.parent_ = obj
@@ -305,12 +312,6 @@ class ContentishMixin(Base):
     @property    
     def __parent__(self):
         return self.parent_
-    
-##    @property
-##    def parent(self):
-##        return self.__parent__
-
-
         
     def postApply(self,changes): 
         self.path_elements_ = self.path_elements
@@ -481,20 +482,13 @@ class FolderishMixin(db.Model):
             return True
         else:
             return False
-
-        
     
     @property    
     def __parent__(self):
         return self.parent_
-    
-##    @classmethod
-##    def init_class(cls):
-##        cls.children_keys = db.ListProperty(db.Key,default=[])
-##        cls.children_names = db.ListProperty(str,default=[])
         
      
-class Root(FolderishMixin, BaseMixin, HasActions):
+class Root(FolderishMixin, ContentishMixin, HasActions):
     """ """
     
     __models = {}
@@ -505,19 +499,14 @@ class Root(FolderishMixin, BaseMixin, HasActions):
     
     implements( interfaces.IRoot)  
     
-    name = db.StringProperty()
-    title = db.StringProperty()
     site_title = db.StringProperty(default='')
-    description = db.TextProperty()
     body = db.TextProperty()
-    created = db.DateTimeProperty(auto_now_add=True)
-    modified = db.DateTimeProperty(auto_now=True)
     email=db.EmailProperty()
     thumbnail_size = db.ListProperty(int,default=[64,64])
     analytics_code=db.TextProperty()
     verification_code=db.TextProperty()
     copyright_statement = db.StringProperty(default='')
-    path_elements_ = db.StringListProperty(default=['/'])
+    
     
     parent_ = None
     environ = None
