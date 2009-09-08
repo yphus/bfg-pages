@@ -17,7 +17,8 @@ class INonContentish(Interface):
     """ Content that doesn't have a true folder heirarchy - ie non 
     explicit parent"""
      
- 
+class IReference(Interface):
+    """ Marker interface""" 
 
 class INews(IContentish):
     
