@@ -363,8 +363,7 @@ class FolderishMixin(db.Model):
     
         #if cached_result:
         #    return cached_result
-        import pdb
-        pdb.set_trace()
+        
         kind = key.kind()
         result= root.models()[kind].get(key)
         #root.setcached(cache_key,result)
