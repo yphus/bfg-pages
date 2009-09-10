@@ -953,7 +953,11 @@ class QueryView(FolderishMixin,ContentishMixin):
         self.getRoot().setcached(path,None)
         obj.delete()
         
+    def reparent_absolute_url(self,obj,request):
+        
 
+        url = "%s%s/" % (self.absolute_url(request),str(obj.key()))
+        return url
  
     
     def __getitem__(self,name):
@@ -1027,7 +1031,11 @@ class QueryView(FolderishMixin,ContentishMixin):
                 i.__parent__ = self
             
             if not getattr(i,'hidden',False):
-                url = i.absolute_url(request)
+                url = ""
+                if self.reparent:
+                    url = self.reparent_absolute_url(i,request)
+                else:    
+                    url = i.absolute_url(request)
                 
                 if hasattr(i,'item_summary'):
                     summary = i.item_summary()
