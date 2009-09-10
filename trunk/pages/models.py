@@ -281,7 +281,8 @@ class NonContentishMixin(Base):
     implements(interfaces.INonContentish)
     
     
-
+    def __repr__(self):
+        return """<%s key_name="%s"/>""" % (self.kind(),repr(self.key()))
        
     @property
     def __name__(self):
