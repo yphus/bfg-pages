@@ -1041,10 +1041,14 @@ class QueryView(FolderishMixin,ContentishMixin):
                     summary = i.item_summary()
                     summary['url']=url
                 else:
-                    title = i.title_or_id()
-                    description = i.description or ''
-                    
-                    summary={'name':i.name,'url':url,'title':title,'description':description,'kind':i.kind(),'key':i.key()}
+                    try:
+                        title = i.title_or_id()
+                    except AttributeError:
+                        title = i.key()
+                        
+                    description = getattr(i,'description','')
+                    name = getattr(i,'name',i.key())
+                    summary={'name':name,'url':url,'title':title,'description':description,'kind':i.kind(),'key':i.key()}
                     if hasattr(i,'image_thumbnail'):
                         summary['thumbnail']=url + 'thumbnail'
                 
