@@ -77,6 +77,7 @@ def create_site(i,request):
                 x = root.createContent(args['name'],klass,path,request,**kwargs)
             except Exception,e:
                 info(str(e))
+                logging.error(str(e))
         else:
             
             x=klass(**args)
