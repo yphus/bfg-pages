@@ -276,7 +276,7 @@ class Base(db.Model):
     
    
 
-class NonContentishMixin(Base):
+class NonContentishMixin(Base,HasActions):
     """ """
     implements(interfaces.INonContentish)
     
