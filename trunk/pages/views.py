@@ -43,7 +43,7 @@ def add_view(context, request):
         kind = request.GET['content']
         
         new_cls = root.get_model(kind)
-        if new_class is None:
+        if new_cls is None:
             logging.error("""Can't find registered class for kind '%s'""" % self.kind)
             raise KeyError("""Can't find registered class for kind '%s'""" % self.kind)
         
