@@ -41,7 +41,12 @@ def add_view(context, request):
         
         root = context.getRoot()
         kind = request.GET['content']
+        
         new_cls = root.get_model(kind)
+        if new_class is None:
+            logging.error("""Can't find registered class for kind '%s'""" % self.kind)
+            raise KeyError("""Can't find registered class for kind '%s'""" % self.kind)
+        
         fake_obj = new_cls()
         structure = zope.component.getAdapter(fake_obj,schema.IStructure)
         form = formish.Form(structure,name='form')
