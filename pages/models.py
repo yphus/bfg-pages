@@ -307,7 +307,7 @@ class NonContentishMixin(Base,HasActions):
     
 class ContentishMixin(Base,HasActions):
     
-    implements(interfaces.IContent)
+    implements(interfaces.IContentish)
     
     parent_ = db.ReferenceProperty()
     path_elements_ = db.StringListProperty(default=[])
