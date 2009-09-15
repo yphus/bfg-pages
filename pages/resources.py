@@ -11,6 +11,7 @@ from pickle import loads, dumps
 class RawFile(db.Model):
     name= db.StringProperty(required=True)
     mimetype=db.StringProperty(default='application/octet-stream')
+    filename=db.StringProperty(default='')
     size=db.IntegerProperty(default=0)
     file=db.BlobProperty()
 
@@ -23,15 +24,15 @@ class RawImage(RawFile):
 class FileResource(NonContentishMixin):
     
     _resource_type = RawFile
-    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0}
+    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'filename':''}
     
     default_resource = db.StringProperty()
     filename = db.StringProperty(default="")
     resources_ = db.BlobProperty(default=None) # this is a summary list of the all raw files it holds
                                                #[ {'name':... , 'mimetype':..., 'size':0}, ...]                                        
     
-    def _updateOne(self,name,mimetype,resourceobj):
-        obj = self._updateResource(name,mimetype,resourceobj)
+    def _updateOne(self,name,mimetype,resourceobj,filename=""):
+        obj = self._updateResource(name,mimetype,resourceobj,filename)
         update_self = self._updateSummary(obj)
         
         obj.put()
@@ -74,7 +75,10 @@ class FileResource(NonContentishMixin):
     
     resources = property(_getResources,_setResources)    
     
-    def _updateResource(self,name,mimetype,resourceobj,dont_save=False):
+    def _updateResource(self,name,mimetype,resourceobj,filename=""):
+        if filename=="":
+            filename = self.filename
+            
         new_key = db.Key.from_path(self._resource_type.kind(),name,parent=self.key())
         obj = db.get(new_key)
         if not obj:
@@ -83,6 +87,7 @@ class FileResource(NonContentishMixin):
         obj.mimetype = mimetype
         obj.file = db.Blob(resourceobj)
         obj.size = len(resourceobj)
+        obj.filename = filename
             
         return obj    
 
@@ -98,8 +103,8 @@ class FileResource(NonContentishMixin):
             self.resources[obj.name] = summary
             udate_self = True
 
-    def addFile(self,name,mimetype,resoureobj):
-        db.run_in_transaction(self._updateOne,name,mimetype,resourceobj)
+    def addFile(self,name,mimetype,resourceobj,filename=''):
+        db.run_in_transaction(self._updateOne,name,mimetype,resourceobj,filename)
             
                                               
 class ImageResource(FileResource):
@@ -107,17 +112,17 @@ class ImageResource(FileResource):
     """ the resources list holds  [ {'name':... , 'mimetype':..., 'size':0, width: 0, height: 0} ] """
     
     _resource_type = RawImage
-    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'width':0,'height':0}
+    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'width':0,'height':0,'filename':''}
     
-    def _updateResource(self,name,mimetype,resourceobj):
+    def _updateResource(self,name,mimetype,resourceobj,filename=''):
         image = images.Image(resourceobj)
-        obj = super(ImageResource,self)._updateResource(name,mimetype,resourceobj)
+        obj = super(ImageResource,self)._updateResource(name,mimetype,resourceobj,filename=filename)
         obj.width = image.width
         obj.height = image.height
         return obj
         
-    def addImage(self,name,mimetype,resourceobj):
+    def addImage(self,name,mimetype,resourceobj,filename=''):
            
-        db.run_in_transaction(self._updateOne,name,mimetype,resourceobj)
+        db.run_in_transaction(self._updateOne,name,mimetype,resourceobj,filename)
         
     
