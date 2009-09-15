@@ -437,6 +437,7 @@ class FolderishMixin(db.Model):
         obj.put()
         # Can't set the parent until the object has been saved !! Need to check this again
         obj.setParent(self)
+        obj.path_elements_ = self.path_elements
         obj.put()
         
         self.put()
