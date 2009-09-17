@@ -235,6 +235,8 @@ class Base(db.Model):
     root = property(getRoot)
     
     def getParent(self):
+        if self.__parent__:
+            return self.__parent__
         result = None
         result= getattr(self,'parent_',None) 
         return result 
