@@ -126,7 +126,8 @@ class FolderStructure(BaseStructure):
             },
          'heading_tab':{
                 'widget':formish.Checkbox
-            }
+            },
+         'custom_view':{'widget':formish.Input,'kwargs':{'empty':''},},
         }
     ) 
     
