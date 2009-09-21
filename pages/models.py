@@ -376,11 +376,17 @@ class FolderishMixin(db.Model):
         
         results = []
         root = self.getRoot()
-        
+        request =None
+        if REQUEST:
+            request = REQUEST
+        else:
+            request = self._request()
+            
+            
         cache_key = str(self.getPath().rstrip('/'))+":summary"
         cached_result = root.getcached(cache_key)
        
-        if cached_result:
+        if cached_result and not getattr(request.principal,'ADMIN',False) :
             return cached_result 
         values = self.contentValues(REQUEST)
         
@@ -402,8 +408,10 @@ class FolderishMixin(db.Model):
             
             if hasattr(i,'image_thumbnail'):
                 summary['thumbnail']=i.thumb_tag()
+        
+        if not getattr(request.principal,'ADMIN',False):   
+            root.setcached(cache_key,results)
             
-        root.setcached(cache_key,results)
         return results            
     
     def content_links(self,REQUEST):
@@ -1002,11 +1010,17 @@ class QueryView(FolderishMixin,ContentishMixin):
     def content_summary(self,request,limit=None):
         results = []
         
+        if REQUEST:
+            request = REQUEST
+        else:
+            request = self._request()
+            
+        
         root = self.getRoot()
         cache_key = str(self.getPath().rstrip())+":summary"
         cached_result = root.getcached(cache_key)
         
-        if cached_result:
+        if cached_result and not getattr(request.principal,'ADMIN',False) :
             if limit:
                 cached_result = cached_result[0:min(len(cached_result),limit)]
             return cached_result 
@@ -1056,7 +1070,10 @@ class QueryView(FolderishMixin,ContentishMixin):
                         summary['thumbnail']=url + 'thumbnail'
                 
                 results.append(summary)
-            
+        
+        if not getattr(request.principal,'ADMIN',False):   
+            root.setcached(cache_key,results)
+              
         root.setcached(cache_key,results)
         
         if limit:

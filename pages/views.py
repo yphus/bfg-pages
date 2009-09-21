@@ -213,6 +213,7 @@ def folder_view(context, request):
     
     if context.default_content and context.default_content in context.contentNames():
         default_content=context[context.default_content]
+        
         alt_body  = render_template('replaceable_body.pt',
                                        request = request,
                                        context = default_content,
