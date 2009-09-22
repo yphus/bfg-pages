@@ -1010,9 +1010,7 @@ class QueryView(FolderishMixin,ContentishMixin):
     def content_summary(self,request,limit=None):
         results = []
         
-        if REQUEST:
-            request = REQUEST
-        else:
+        if not request: 
             request = self._request()
             
         
