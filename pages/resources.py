@@ -14,6 +14,9 @@ class RawFile(db.Model):
     filename=db.StringProperty(default='')
     size=db.IntegerProperty(default=0)
     file=db.BlobProperty()
+    
+    def __call__(self,request):
+        return self.file
 
 
 class RawImage(RawFile):
