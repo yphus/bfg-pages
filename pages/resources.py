@@ -2,13 +2,13 @@
 from google.appengine.api import images 
 from google.appengine.ext import db
 
-from pages.models import NonContentishMixin
+from pages.models import NonContentishMixin, MinimalTraversalMixin
 import copy
 from pickle import loads, dumps
-
+from pages.utils import BREAKPOINT
 # RawFile and RawImage will always be created with an ancestor
 
-class RawFile(db.Model):
+class RawFile(db.Model,MinimalTraversalMixin):
     name= db.StringProperty(required=True)
     mimetype=db.StringProperty(default='application/octet-stream')
     filename=db.StringProperty(default='')
@@ -74,6 +74,7 @@ class FileResource(NonContentishMixin):
         return self._v_resources_
     
     def _setResources(self,val):
+        delattr(self,'_v_resources_')
         self.resources_ =  db.Blob(dumps(val))
     
     resources = property(_getResources,_setResources)    
@@ -116,6 +117,7 @@ class ImageResource(FileResource):
     
     _resource_type = RawImage
     _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'width':0,'height':0,'filename':''}
+    _default = 'raw'
     
     def _updateResource(self,name,mimetype,resourceobj,filename=''):
         image = images.Image(resourceobj)
@@ -123,6 +125,34 @@ class ImageResource(FileResource):
         obj.width = image.width
         obj.height = image.height
         return obj
+    
+    def tag(self,*args,**kwargs):
+        imgtmpl = """<img src="%s" width="%d" height="%d" %s />"""
+        resname = self._default
+        if args:
+            if len(args) > 1:
+                raise TypeError('tag tags only one option position arg which is the resource name')
+            else:
+                resname = args[0]
+                
+        resource = self.resources[resname]        
+        
+        opts = ''    
+        result = []
+        for arg in kwargs.items():
+            result.append('%s="%s"'% arg)
+            
+        if result:
+            opts = ' '.join(result)        
+        
+        if resname == self._default:
+            resname = ''    
+        url = self.getParent().absolute_url()+resname
+        return imgtmpl % (url.rstrip('/'),
+            resource.get('width'),
+            resource.get('height'),
+            opts)
+                
         
     def addImage(self,name,mimetype,resourceobj,filename=''):
            

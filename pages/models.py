@@ -276,12 +276,7 @@ class Base(db.Model):
     def template(self):
         return self._template
     
-   
-
-class NonContentishMixin(Base,HasActions):
-    """ """
-    implements(interfaces.INonContentish)
-    
+class MinimalTraversalMixin(): 
     
     def __repr__(self):
         return """<%s key_name="%s"/>""" % (self.kind(),repr(self.key()))
@@ -304,7 +299,14 @@ class NonContentishMixin(Base,HasActions):
     def absolute_url(self,request):
         parent=self.getParent()
         url = "%s%s/" % (parent.absolute_url(request),str(self.key()))
-        return url
+        return url  
+
+class NonContentishMixin(MinimalTraversalMixin,Base,HasActions):
+    """ """
+    implements(interfaces.INonContentish)
+    
+    
+   
     
     
 class ContentishMixin(Base,HasActions):
@@ -1195,7 +1197,7 @@ Root.register_models(PicassaGallery)
 def getRoot(environ=None,cache=True):
     
     root = None
-    
+   
     if 'root' in Root._v_cache and cache:
         root= Root._v_cache['root']  
     else:
