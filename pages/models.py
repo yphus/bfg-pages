@@ -1194,16 +1194,16 @@ Root.register_models(QueryView)
 Root.register_models(PicassaGallery)
 
 
-def getRoot(environ=None):
+def getRoot(environ=None,cache=True):
     
     root = None
     
-    if 'root' in Root._v_cache:
+    if 'root' in Root._v_cache and cache:
         root= Root._v_cache['root']  
     else:
-        r= list(Root.all().fetch(1))
+        r= Root.all().get()
         if r:
-            Root._v_cache['root'] = r[0]
+            Root._v_cache['root'] = r
             root= Root._v_cache['root']
             root.environ = environ      
         else:
