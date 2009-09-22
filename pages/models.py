@@ -276,7 +276,7 @@ class Base(db.Model):
     def template(self):
         return self._template
     
-class MinimalTraversalMixin(): 
+class MinimalTraversalMixin: 
     
     def __repr__(self):
         return """<%s key_name="%s"/>""" % (self.kind(),repr(self.key()))
