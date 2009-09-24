@@ -211,7 +211,27 @@ class PortletStructure(ActionStructure):
     portlet_template = schemaish.String()
     _widgets = copy.copy(ActionStructure._widgets)
     
-
+class StaticListStructure(BaseStructure):
+    
+    body = schemaish.String()
+    hidden = schemaish.Boolean()
+    reparent = schemaish.Boolean()
+    list_items = schemaish.String()
+    custom_view = schemaish.String()
+    
+    _widgets = copy.copy(BaseStructure._widgets)
+    _widgets.update( 
+        {'body':{'widget':formish.TextArea,
+            'args':[],
+            'kwargs':{'cols':80,'rows':25,'empty':''},},
+         'hidden': {'widget':formish.Checkbox},
+         'reparent': {'widget':formish.Checkbox},
+        'list_items':{'widget':formish.TextArea,
+            'args':[],
+            'kwargs':{'cols':80,'rows':10,'empty':''},},
+        }
+    )    
+ 
 class QueryViewStructure(BaseStructure):
     
     find_kind = schemaish.String(validator=validatish.Required())
