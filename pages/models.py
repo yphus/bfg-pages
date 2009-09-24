@@ -347,10 +347,16 @@ class FolderishMixin(db.Model):
         self.root.delcached(path+":links")
         
       
-    def contentValues(self,REQUEST=None):
+    def contentValues(self,REQUEST=None,kind=None):
+
+        ct = []
+        if kind and type(kind) == type(''):
+            ct = [kind]
         
         if self.children_keys:
             results= [i for i in db.get( self.children_keys) if i != None]
+            if ct:
+                results= [i for i in results if i.kind() in ct]
             results.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
             return results
         else:
