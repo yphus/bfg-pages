@@ -234,19 +234,21 @@ class Base(db.Model):
     
     root = property(getRoot)
     
-    def getParent(self):
-        if self.__parent__:
-            return self.__parent__
+    def getParent(self,trueParent=False):
+        if not trueParent:
+            if self.__parent__:
+                return self.__parent__
+        
         result = None
         result= getattr(self,'parent_',None) 
         return result 
     
-    def getPathElements(self):
+    def getPathElements(self,trueParent=False):
         results = [self]
-        parent = self.getParent()
+        parent = self.getParent(trueParent)
         while parent:
             results.append(parent)
-            parent = parent.getParent()             
+            parent = parent.getParent(trueParent)             
     
         results.reverse()
         return results
@@ -293,7 +295,9 @@ class MinimalTraversalMixin:
     
     root = property(getRoot)
     
-    def getParent(self):
+    def getParent(self,trueParent=False):
+        if trueParent:
+            return None
         return self.__parent__  
     
     def absolute_url(self,request):
@@ -400,7 +404,7 @@ class FolderishMixin(db.Model):
         
         if limit:
             values = values[0:min(limit,len(values))]
-            
+        
         for i in self.contentValues(REQUEST):
             url = i.absolute_url(REQUEST)
             title = i.title_or_id()
@@ -675,13 +679,13 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
     def __name__(self):
         return ''   
     
-    def getParent(self):
+    def getParent(self,trueParent=False):
         return None
     
     def dbGet(self,key):
         return db.get(key)
     
-    def getPathElements(self):
+    def getPathElements(self,trueParent=False):
         return [self]
     
     
