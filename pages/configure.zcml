@@ -122,9 +122,26 @@
         />
 
     <view
+        for=".interfaces.IStaticListView"
+        view=".views.query_view"
+        name="view"/>
+
+    <view
+        for=".interfaces.IStaticListView"
+        view=".views.query_view"
+        />
+
+    <view
+        for=".interfaces.IStaticListView"
+        view=".views.query_contents_view"
+        name="contents"
+        />
+
+    <view
         for=".interfaces.IQueryView"
         view=".views.query_view"
         name="view"/>
+
 
     <adapter
         factory="pages.schema.FolderStructure"
@@ -162,6 +179,10 @@
         for="pages.interfaces.IPicassaGallery"
         provides="pages.schema.IStructure"/> 
 
+       <adapter
+        factory="pages.schema.StaticListStructure"
+        for="pages.interfaces.IStaticListView"
+        provides="pages.schema.IStructure"/> 
 
     <adapter
         factory="pages.schema.QueryViewStructure"

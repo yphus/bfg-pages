@@ -934,9 +934,7 @@ class Folder(FolderishMixin,ContentishMixin):
  
     def __repr__(self):
         return '<Folder path="%s">' % self.getPath()
-    
 
-    
     
     def __call__(self,REQUEST=None):
         if self.default_content:
@@ -946,6 +944,144 @@ class Folder(FolderishMixin,ContentishMixin):
         return super(Folder,self).__call__(REQUEST)
     
     
+    
+class StaticList(FolderishMixin,ContentishMixin):
+    """ """
+    zope.interface.implements(interfaces.IStaticListView) 
+    _template = "query"    
+
+    body = db.TextProperty(default=u'')
+    hidden=db.BooleanProperty(default=False)
+    reparent=db.BooleanProperty(default=False)
+    list_items = db.TextProperty(default=u'')
+    custom_view = db.StringProperty(default=u'')
+
+
+
+    def template(self):
+        if self.custom_view:
+            return self.custom_view
+        return super(QueryView,self).template() 
+
+    
+    def reparent_absolute_url(self,obj,request):
+        url = "%s%s/" % (self.absolute_url(request),str(obj.key()))
+        return url
+
+    def content_summary(self,REQUEST,limit=None):
+        
+        results = []
+        root = self.getRoot()
+        request =None
+        if REQUEST:
+            request = REQUEST
+        else:
+            request = self._request()
+            
+            
+        cache_key = str(self.getPath().rstrip('/'))+":summary"
+        cached_result = root.getcached(cache_key)
+       
+        if cached_result and not getattr(request.principal,'ADMIN',False) :
+            return cached_result 
+        values = self.contentValues(REQUEST)
+        
+        if limit:
+            values = values[0:min(limit,len(values))]
+        
+        for i in self.contentValues(REQUEST):
+            if self.reparent:
+                url = self.reparent_absolute_url(i,REQUEST)
+            else:
+                url = i.absolute_url(REQUEST)
+            title = i.title_or_id()
+            description = i.description or ''
+            summary={'name':i.name,'url':url,'title':title,
+                'description':description,
+                'kind':i.kind(),
+                'hidden':getattr(i,'hidden',False),
+                'modified': i.modified,
+                'isfolder':interfaces.IFolderish.providedBy(i)}
+            summary['heading_tab'] = getattr(i,'heading_tab',False)
+            results.append(summary)
+            
+            if hasattr(i,'image_thumbnail'):
+                summary['thumbnail']=i.thumb_tag()
+        
+        if not getattr(request.principal,'ADMIN',False):   
+            root.setcached(cache_key,results)
+            
+        return results  
+
+    def contentValues(self,REQUEST):
+        results=[]
+        for i in self.list_items.split('\n'):
+            try:
+                method,key = i.strip().split(':',1)
+            except ValueError:
+                continue
+            
+            item = None
+            
+            try:
+                
+                if method=='key':
+                   
+                        item = self[key]
+                        
+                elif method=='path':
+                     item = self.traverse(key)
+                     
+            except KeyError:
+                    continue
+                         
+            if item:
+                if isinstance(item,NonContentishMixin) or self.reparent:
+                    try:
+                        setattr(item,'__parent__',self)
+                    except AttributeError:
+                        pass
+                
+                results.append(item)
+        
+        return results        
+
+    def contentNames(self):
+        return [i.key for i in self.contentValues()]   
+        
+    def __repr__(self):
+        return '<StaticList path="%s">' % self.getPath()
+    
+    def __getitem__(self,name):
+        
+        root = self.getRoot()
+        
+        try:
+            key = db.Key(name)
+        except db.BadKeyError:
+            raise KeyError
+        
+        
+        cache_key = str(key)
+        obj = root.getcached(cache_key)
+        
+        if not obj:
+                         
+            obj = db.get(name)
+            root.setcached(cache_key,obj)
+            
+        
+        if obj:
+            if isinstance(obj,NonContentishMixin) or self.reparent:
+                try:
+                    setattr(obj,'__parent__',self)
+                except AttributeError:
+                    pass
+            return obj
+        else:
+            raise KeyError('Object not found')
+
+
 
 class QueryView(FolderishMixin,ContentishMixin):
     """ """
@@ -1200,6 +1336,7 @@ Root.register_models(File)
 Root.register_models(Image)
 Root.register_models(Action)
 Root.register_models(Portlet)
+Root.register_models(StaticList)
 Root.register_models(QueryView)
 Root.register_models(PicassaGallery)
 

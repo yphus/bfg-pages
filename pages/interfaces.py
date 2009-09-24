@@ -56,8 +56,11 @@ class IPortlet(IAction):
     
     """Viewlet"""
 class IPortletContext(Interface):
-    """ portlet context """              
-
+    """ portlet context """        
+          
+class IStaticListView(IContentish):
+    """ list of items defined by a static list of keys or paths"""
+    
 class IQueryView(IContentish):
     """Query entity"""
         
