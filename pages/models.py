@@ -300,7 +300,9 @@ class MinimalTraversalMixin:
             return None
         return self.__parent__  
     
-    def absolute_url(self,request):
+    def absolute_url(self,request=None):
+        if request is None:
+            request = self._request()
         parent=self.getParent()
         url = "%s%s/" % (parent.absolute_url(request),str(self.key()))
         return url  
