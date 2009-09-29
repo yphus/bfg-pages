@@ -66,7 +66,9 @@ class HasActions(object):
             kind_actions = kind_actions.filter('group = ',group)
 
         results = []
-        for action in list(star_actions) + list(kind_actions):
+        all_actions = list(star_actions) + list(kind_actions)
+        all_actions.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
+        for action in all_actions:
             
             if action.allowed(self,request):
                 results.append( action.resolve(self,request,notag) )
@@ -750,6 +752,7 @@ class Action(ContentishMixin):
                       'name':self.name,
                       'label':self.label,
                       'title':self.title,
+                      'display_order':self.display_order,
                       'description':self.description}
         else:
             result = """<a href="%(href)s" class="%(class)s" name="%(name)s" title="%(label)s">%(label)s</a>""" % {'class':self.css_class, 
