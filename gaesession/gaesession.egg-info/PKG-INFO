@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: gaesession
+Version: 0.1dev
+Summary: A beaker.session backend using memcache in google app engine
+Home-page: http://code.google.com/p/bfg-pages/
+Author: Tim Hoffman
+Author-email: zutesmog@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: google appengine beaker session memcache
+Platform: UNKNOWN
