@@ -210,6 +210,8 @@ def folder_view(context, request):
     default_content = None
     result = ""
     alt_body = ""
+    #BREAKPOINT()
+    logging.info('Original folder_view')
     
     if context.default_content and context.default_content in context.contentNames():
         default_content=context[context.default_content]
