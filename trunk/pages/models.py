@@ -196,15 +196,15 @@ class Base(db.Model):
     def traverse(self,path):
         return find_model(self,unquote(path))
     
+     
     def traverse_view(self,path,REQUEST=None):
         viewdef = traverse(self,path)
         if REQUEST is None:
             REQUEST=self._request()
-        view = zope.component.queryMultiAdapter((viewdef['context'],REQUEST),repoze.bfg.interfaces.IView,viewdef['view_name'])
-        
-        
+        view = zope.component.getMultiAdapter((viewdef['context'],REQUEST),\
+                               repoze.bfg.interfaces.IView,viewdef['view_name'])
         return view
-     
+
     def _request(self):
         return get_current_request()
         

@@ -72,6 +72,22 @@ def cacheoutput(func):
     return _wrapper
 
 
+def cacheinstancemethodoutput(func):
+    """ memcache caching decorator for instance methods"""
+    def _wrapper(context, mcontext, REQUEST):
+        mcontext = context
+        if hasattr(context,'context'):
+            mcontext = context.context
+        output = func(context, mcontext, REQUEST)
+        if not getattr(REQUEST.principal,'ADMIN',False):
+            key=REQUEST.path_url.rstrip('/')
+            memcache.set(key,output,86400)
+            logging.info('cache key: %s' % key)
+        return output    
+            
+    return _wrapper
+
+
 def make_time_header(thetime=None,add=0):
     
     if not thetime:
