@@ -201,8 +201,7 @@ class Base(db.Model):
         if REQUEST is None:
             REQUEST=self._request()
         view = zope.component.queryMultiAdapter((viewdef['context'],REQUEST),repoze.bfg.interfaces.IView,viewdef['view_name'])
-        if view:
-            view = view[0]
+        
         
         return view
      
