@@ -183,6 +183,9 @@ class Base(db.Model):
     @property
     def id(self):
         return self.__name__
+   
+    def session(self):
+        return self._request().environ.get('beaker.session',None)
         
     def clearCache(self):
         """ """
@@ -192,6 +195,16 @@ class Base(db.Model):
         
     def traverse(self,path):
         return find_model(self,unquote(path))
+    
+    def traverse_view(self,path,REQUEST=None):
+        viewdef = traverse(self,path)
+        if REQUEST is None:
+            REQUEST=self._request()
+        view = zope.component.queryMultiAdapter((viewdef['context'],REQUEST),repoze.bfg.interfaces.IView,viewdef['view_name'])
+        if view:
+            view = view[0]
+        
+        return view
      
     def _request(self):
         return get_current_request()
