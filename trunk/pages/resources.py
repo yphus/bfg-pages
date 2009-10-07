@@ -6,6 +6,7 @@ from pages.models import NonContentishMixin, MinimalTraversalMixin
 import copy
 from pickle import loads, dumps
 from pages.utils import BREAKPOINT
+import logging
 # RawFile and RawImage will always be created with an ancestor
 
 class RawFile(db.Model,MinimalTraversalMixin):
@@ -140,6 +141,9 @@ class ImageResource(FileResource):
         opts = ''    
         result = []
         for arg in kwargs.items():
+            if arg[0] == 'css_class':
+                result.append('class="%s"'% arg[1])
+                continue
             result.append('%s="%s"'% arg)
             
         if result:
