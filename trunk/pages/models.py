@@ -430,7 +430,8 @@ class FolderishMixin(db.Model):
                 'kind':i.kind(),
                 'hidden':getattr(i,'hidden',False),
                 'modified': i.modified,
-                'isfolder':interfaces.IFolderish.providedBy(i)}
+                'isfolder':interfaces.IFolderish.providedBy(i),
+                'display_order': getattr(i,'display_order',5)}
             summary['heading_tab'] = getattr(i,'heading_tab',False)
             results.append(summary)
             
