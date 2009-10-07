@@ -148,6 +148,20 @@ class Reference(db.Model):
     src_id = db.StringProperty()
     target_id = db.StringProperty()
     reference_type = db.StringProperty()
+    
+    def __eq__(self,value):
+        
+        if self.__class__ == value.__class__:
+            return self.key() == value.key()
+        else:
+            return False
+    
+    def __ne__(self,value):
+        return not self.__eq__(value)
+    
+    def __hash__(self):
+       
+        return hash(str(self.key()))
 
 class Base(db.Model):
     
@@ -166,7 +180,20 @@ class Base(db.Model):
     @property
     def __name__(self):
         return self.name   
+    
+    def __eq__(self,value):
         
+        if self.__class__ == value.__class__:
+            return self.key() == value.key()
+        else:
+            return False
+    
+    def __ne__(self,value):
+        return not self.__eq__(value)
+    
+    def __hash__(self):
+       
+        return hash(str(self.key()))    
        
     def __get_parent__(self):
         p= getattr(self,'_v_parent',None)
