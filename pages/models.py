@@ -405,6 +405,7 @@ class FolderishMixin(db.Model):
             if ct:
                 results= [i for i in results if i.kind() in ct]
             results.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
+            
             return results
         else:
             return []
