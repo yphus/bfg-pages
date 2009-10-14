@@ -355,12 +355,12 @@ class NonContentishMixin(MinimalTraversalMixin,Base,HasActions):
     
    
     
-    
+   
 class ContentishMixin(Base,HasActions):
     
     implements(interfaces.IContentish)
-    
-    parent_ = db.ReferenceProperty()
+
+    parent_ = db.ReferenceProperty(collection_name='children_')
     path_elements_ = db.StringListProperty(default=[])
     display_order = db.IntegerProperty(default=5)
     
