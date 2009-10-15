@@ -399,6 +399,8 @@ class FolderishMixin(db.Model):
         ct = []
         if kind and type(kind) == type(''):
             ct = [kind]
+        elif kind:
+            ct = kind
         
         if self.children_keys:
             results= [i for i in db.get( self.children_keys) if i != None]
