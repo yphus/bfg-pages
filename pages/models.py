@@ -353,7 +353,8 @@ class NonContentishMixin(MinimalTraversalMixin,Base,HasActions):
     implements(interfaces.INonContentish)
     
     
-   
+class PropertySheet(db.Expando,NonContentishMixin):
+    """ provides entities for storing abitrary properties"""   
     
    
 class ContentishMixin(Base,HasActions):
