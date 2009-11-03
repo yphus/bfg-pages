@@ -12,7 +12,7 @@ from os.path import join, isfile, isabs, basename, dirname
 from engine import Engine
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-
+from repoze.bfg.threadlocal import get_current_request
 from gae import utils
 TEMPLATE_DIRS = utils.settings['template_path']
 
@@ -26,13 +26,14 @@ class TemplateDoesNotExist(Exception):
 
 # The factory method, aka "template loader".
 def get_template(template_name):
-
-    """Returns a GAEPageTemplateFile object."""
     
-    t = _cache.get(template_name)
+    """Returns a GAEPageTemplateFile object."""
+    request = get_current_request()
+    cache_key = "%s:%s" % (getattr(request,'SKIN_NAME','default'),template_name)
+    t = _cache.get(cache_key,None)
     if t is None:
         t = GAEPageTemplateFile(template_name)
-        _cache[template_name] = t
+        _cache[cache_key] = t
     return t
     
 class Context(object):
@@ -75,19 +76,20 @@ class GAEPageTemplateFile(PageTemplateFile):
 
 def findtemplate(template_name, _ext='.pt'):
     """Locates a template on template path."""
-    
+    request = get_current_request()
+    template_dirs = getattr(request,'SKIN_PATH',TEMPLATE_DIRS)
     if not template_name.endswith(_ext):
         template_name += _ext
     template_name = template_name.split('/')
     tried = []
     curdir = getcwd()    
-    for dir in TEMPLATE_DIRS:
+    for dir in template_dirs:
         filepath = join(curdir,dir, *template_name)
         if isfile(filepath):
             return filepath
         else:
             tried.append(filepath)
-    if TEMPLATE_DIRS:
+    if template_dirs:
         error_msg = "Tried %s" % tried
     else:
         error_msg = "Your TEMPLATE_DIRS setting is empty. Change it to point to at least one template directory."
