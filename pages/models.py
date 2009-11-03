@@ -1062,7 +1062,7 @@ class StaticList(FolderishMixin,ContentishMixin):
             
         return results  
 
-    def contentValues(self,REQUEST):
+    def contentValues(self,REQUEST=None):
         results=[]
         for i in self.list_items.split('\n'):
             try:
