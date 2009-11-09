@@ -1388,7 +1388,7 @@ Root.register_models(Portlet)
 Root.register_models(StaticList)
 Root.register_models(QueryView)
 Root.register_models(PicassaGallery)
-
+Root.register_models(PropertySheet)
 
 def getRoot(environ=None,cache=True):
     
