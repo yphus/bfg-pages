@@ -431,7 +431,7 @@ class FolderishMixin(db.Model):
         for i in self.contentValues(REQUEST):            
             yield i.name,i
             
-    def content_summary(self,REQUEST,limit=None):
+    def content_summary(self,REQUEST=None,limit=None):
         
         results = []
         root = self.getRoot()
