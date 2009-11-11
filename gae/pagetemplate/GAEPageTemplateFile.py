@@ -5,7 +5,8 @@ Adapted from DJango PageTemplates but removing all of the Django specific stuff
 """
 
 
-
+import logging
+logging.getLogger().setLevel(logging.DEBUG)
 from os import getcwd 
 from os.path import join, isfile, isabs, basename, dirname
 
@@ -31,6 +32,7 @@ def get_template(template_name):
     request = get_current_request()
     cache_key = "%s:%s" % (getattr(request,'SKIN_NAME','default'),template_name)
     t = _cache.get(cache_key,None)
+    logging.debug('get_template %s'%cache_key)
     if t is None:
         t = GAEPageTemplateFile(template_name)
         _cache[cache_key] = t
@@ -78,6 +80,7 @@ def findtemplate(template_name, _ext='.pt'):
     """Locates a template on template path."""
     request = get_current_request()
     template_dirs = getattr(request,'SKIN_PATH',TEMPLATE_DIRS)
+    
     if not template_name.endswith(_ext):
         template_name += _ext
     template_name = template_name.split('/')
@@ -86,6 +89,7 @@ def findtemplate(template_name, _ext='.pt'):
     for dir in template_dirs:
         filepath = join(curdir,dir, *template_name)
         if isfile(filepath):
+            logging.debug('Found template %s' % filepath)
             return filepath
         else:
             tried.append(filepath)
@@ -100,6 +104,7 @@ def loadmacro(template_name, macro_name):
     """Loads a macro from a GAEPageTemplate."""
 
     t = get_template(template_name)
+    logging.debug('loading macro %s from %s' % (macro_name,t.filename))
     if t.macros is None or t._v_errors:
         error_msg = "Template '%s' is broken. %s" % (template_name, t.pt_errors({}))
     else:
