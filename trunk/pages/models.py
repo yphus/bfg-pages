@@ -985,12 +985,13 @@ class Folder(FolderishMixin,ContentishMixin):
         return '<Folder path="%s">' % self.getPath()
 
     
-    def __call__(self,REQUEST=None):
-        if self.default_content:
-            if  self.default_content in self.contentNames():
-                obj = self[self.default_content]
-                return obj(REQUEST)
-        return super(Folder,self).__call__(REQUEST)
+##    def __call__(self,REQUEST=None):
+##        if self.default_content:
+##            if  self.default_content in self.contentNames():
+##                obj = self[self.default_content]
+##                return obj(REQUEST)
+##        
+##        #return super(Folder,self).__call__(REQUEST)
     
     
     
