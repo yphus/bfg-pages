@@ -778,9 +778,11 @@ class Action(ContentishMixin):
             container = context.getParent()
             
         ac = utils.ActionContext(request,{'context':context,'object':context,'request':request,'container':container})    
-        expr = self.engine.compile(self.expr)       
+        expr = self.engine.compile(self.expr) 
+        resolved_expr = None
+              
         try:
-            x = expr(ac)
+            resolved_expr = expr(ac)
         except AttributeError:
             # Don't break on invalid expression.
             # Note: Change to log stack trace.
@@ -791,8 +793,8 @@ class Action(ContentishMixin):
                 return ''
         if notag:
             result = {'class': self.css_class,
-                      'href':expr(ac),
-                      'url':expr(ac),
+                      'href':resolved_expr,
+                      'url':resolved_expr,
                       'name':self.name,
                       'label':self.label,
                       'title':self.title,
@@ -800,7 +802,7 @@ class Action(ContentishMixin):
                       'description':self.description}
         else:
             result = """<a href="%(href)s" class="%(class)s" name="%(name)s" title="%(label)s">%(label)s</a>""" % {'class':self.css_class, 
-                                      'href':expr(ac),
+                                      'href':resolved_expr,
                                       'name':self.name,
                                       'label':self.label}
         
