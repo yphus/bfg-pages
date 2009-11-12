@@ -1018,7 +1018,7 @@ class StaticList(FolderishMixin,ContentishMixin):
         url = "%s%s/" % (self.absolute_url(request),str(obj.key()))
         return url
 
-    def content_summary(self,REQUEST,limit=None):
+    def content_summary(self,REQUEST=None,limit=None):
         
         results = []
         root = self.getRoot()
