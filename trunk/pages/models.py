@@ -223,6 +223,18 @@ class Base(db.Model):
     def traverse(self,path):
         return find_model(self,unquote(path))
     
+    def acquire(self,name):
+        names = getattr(self,'contentNames',None)
+        if names and name in names():
+            return self[name]
+        
+        parent = self.getParent()
+        if parent:
+            return parent.acquire(name)
+        
+        return None
+        
+    
      
     def traverse_view(self,path,REQUEST=None):
         viewdef = traverse(self,path)
@@ -379,6 +391,7 @@ class ContentishMixin(Base,HasActions):
 class FolderishMixin(db.Model):
     
     implements(interfaces.IFolderish)
+    folderish = True
     
     children_keys = db.ListProperty(db.Key,default=[])
     children_names = db.StringListProperty(str,default=[])
@@ -566,6 +579,10 @@ class FolderishMixin(db.Model):
         else:
             return False
     
+    def __iter__(self):
+        for i in self.contentValues():
+            yield i
+    
     @property    
     def __parent__(self):
         return self.parent_
@@ -607,6 +624,7 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
         return self.__models.get(type_name)
     
     def portlets(self,context,REQUEST,group=None):
+        
         return getPortlets(context,REQUEST,group)
     
     def heading_tabs(self,REQUEST,group="admin"):
