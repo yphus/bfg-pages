@@ -1,0 +1,25 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        
+            
+            <div metal:fill-slot="body">
+<tal:block metal:define-macro="body">
+              <h1 class="title" tal:content="context/title"/>
+              <div tal:content="structure context/description"/>
+              <p/>
+              <ul>
+                  <li tal:repeat="item python: context.content_summary(request)" >
+                     <a href="" tal:attributes="href string:${item/url}view;
+                                    title item/title|item/name" 
+                                tal:content="item/title"/><p/>
+                     <span tal:content="item/description"/>
+                  </li>
+               </ul>
+  </tal:block>
+            </div>
+      
+   </body>
+</html>

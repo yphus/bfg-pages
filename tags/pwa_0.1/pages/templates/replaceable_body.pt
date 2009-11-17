@@ -1,0 +1,8 @@
+<html tal:omit-tag="">  
+  <tal:block metal:define-macro="body">
+  <tal:block tal:define="old_context context;
+                         context alt_context;"
+             metal:use-macro="python:template_path[template_name]['macros']['body']"/>
+       
+  </tal:block>
+</html>

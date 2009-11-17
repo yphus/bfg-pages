@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+gaesession/__init__.py
+gaesession.egg-info/PKG-INFO
+gaesession.egg-info/SOURCES.txt
+gaesession.egg-info/dependency_links.txt
+gaesession.egg-info/entry_points.txt
+gaesession.egg-info/not-zip-safe
+gaesession.egg-info/top_level.txt

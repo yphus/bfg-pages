@@ -1,0 +1,18 @@
+<html>
+Setup
+
+
+<body>
+
+<ul>
+   <li tal:repeat="item data">
+        <span tal:content="python:item[2]"/>
+    
+        <a tal:attributes="href python:'/setup?action=%s' % item[2]" 
+                            tal:content="python: 'Process %s' %  item[2]"/>
+                
+        
+    </li>
+</ul>
+</body>
+</html> 

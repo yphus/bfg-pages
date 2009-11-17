@@ -1,0 +1,68 @@
+application: <MY APPID HERE>
+version: 1
+runtime: python
+api_version: 1
+
+default_expiration: "4d 5h"
+
+
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*/tests/.*
+
+
+
+handlers:
+
+- url: /robots.txt
+  static_files: static/robots.txt
+  upload: static/robots.txt
+
+- url: /favicon.ico
+  static_files: images/favicon.ico
+  upload: images/favicon.ico
+  expiration: "30d"
+
+- url: /images/(.*)
+  static_files: images/\1
+  upload: images/\w+\.\w+
+  expiration: "30d"
+
+- url: /static/(.*)
+  static_files: static/\1
+  upload: static/\w+\.\w+
+
+- url: /css/(.*)
+  static_files: css/\1
+  upload: css/\w+\.\w+
+  expiration: "30d"
+
+- url: /js/(.*)
+  static_files: js/\1
+  upload: js/\w+\.\w+
+  expiration: "30d"
+
+- url: /admin/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+
+- url: /setup(.*)
+  script: setup_data.py
+  login: admin
+
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
+
+- url: .*
+  script: main.py
+

@@ -1,0 +1,7 @@
+<div>
+   <P/> 
+   <tal:block tal:content="string: sample portlet"/>
+   <div tal:content="nocall: context"/>
+   <div tal:content="nocall: portlet"/>
+   <div tal:content="nocall: view"/>
+</div>
