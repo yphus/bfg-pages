@@ -10,6 +10,9 @@ from zope.tales.expressions import PathExpr as BasePathExpr
 from zope.tales.expressions import StringExpr, NotExpr, DeferExpr
 from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
+from repoze.bfg.traversal import traverse
+from zope.component import getMultiAdapter
+from repoze.bfg.interfaces import IView
 
 _marker = object()
 from gae.utils import BREAKPOINT
@@ -21,6 +24,11 @@ def simpleTraverse(object, path_items, econtext):
         next = getattr(object, name, _marker)
         if next is not _marker:
             object = next
+        #elif name.startswith('@@'):
+        #    viewdef = traverse(econtext,path_items)
+        #    request = econtext.request
+        #    object = getMultiAdapter((viewdef['context'],request), \
+        #                                             IView,viewdef['view_name'])
         elif hasattr(object, '__getitem__'):
             
             object = object[name]

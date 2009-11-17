@@ -151,6 +151,7 @@ class ImageResource(FileResource):
         
         if resname == self._default:
             resname = ''    
+        #logging.info('***resource: %s' % repr(self.getParent()))
         url = self.getParent().absolute_url()+resname
         return imgtmpl % (url.rstrip('/'),
             resource.get('width'),

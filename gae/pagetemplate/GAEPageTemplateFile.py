@@ -16,6 +16,8 @@ from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from repoze.bfg.threadlocal import get_current_request
 from gae import utils
 TEMPLATE_DIRS = utils.settings['template_path']
+TEMPLATE_CACHE_ENABLE = utils.settings.get('template_cache_enable',True)
+import logging
 
 # Module level cach for loaded page templates
 # PageTemplateFiles refresh from disk automatically.
@@ -29,6 +31,8 @@ class TemplateDoesNotExist(Exception):
 def get_template(template_name):
     
     """Returns a GAEPageTemplateFile object."""
+    if not TEMPLATE_CACHE_ENABLE:
+        return GAEPageTemplateFile(template_name) # Dev switch off caching
     request = get_current_request()
     cache_key = "%s:%s" % (getattr(request,'SKIN_NAME','default'),template_name)
     t = _cache.get(cache_key,None)
@@ -51,6 +55,12 @@ class GAEPageTemplateFile(PageTemplateFile):
             filename = findtemplate(filename)
         
         super(GAEPageTemplateFile,self).__init__(filename)
+
+    def getId(self):
+        full = self.filename
+        name = full.split('/')[-1]
+        #logging.info('***Template id: %s' % self.filename)
+        return name.rstrip('.pt')
 
     def render(self,*args, **kwargs):
 
