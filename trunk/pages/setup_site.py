@@ -47,9 +47,12 @@ def create_site(i,request):
             #if type(args[arg])== DBKeys:
             #    BREAKPOINT()
             
-            if type(args[arg]) not in [ unicode,str,db.Email,DBKeys,list,int,bool]:
+            if type(args[arg]) not in [ unicode,str,db.Email,DBKeys,list,int,bool,long,None,]:
                 #BREAKPOINT()
-                ref=[i for i in list(args[arg].all()) if i.name == args[arg].name]
+                try:
+                    ref=[i for i in list(args[arg].all()) if i.name == args[arg].name]
+                except AttributeError:
+                    logging.error('cant handle %s %s' % (arg,repr(args[arg])))
                 ref_key = arg
                 if ref:
                     ref = ref[0]
