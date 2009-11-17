@@ -71,6 +71,16 @@ def cacheoutput(func):
             
     return _wrapper
 
+def cachemethodoutput(meth):
+    def _wrapper(self):
+        output = meth(self)
+        
+        if not getattr(self.request.principal,'ADMIN',False):
+            key=self.request.path_url.rstrip('/')
+            memcache.set(key,output,86400)
+        return output    
+            
+    return _wrapper
 
 def cacheinstancemethodoutput(func):
     """ memcache caching decorator for instance methods"""
