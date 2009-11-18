@@ -481,7 +481,8 @@ class FolderishMixin(db.Model):
             
             if hasattr(i,'image_thumbnail'):
                 summary['thumbnail']=i.thumb_tag()
-        
+            if hasattr(i,'image'):
+                        summary['thumbnail']=url + 'mini'
         if not getattr(request.principal,'ADMIN',False):   
             root.setcached(cache_key,results)
             
@@ -1255,7 +1256,7 @@ class QueryView(FolderishMixin,ContentishMixin):
                
                 if i:
                     query = query.order(i.strip())
-
+        
         for i in query:
             summary = {}
             #BREAKPOINT()
@@ -1282,8 +1283,12 @@ class QueryView(FolderishMixin,ContentishMixin):
                     description = getattr(i,'description','')
                     name = getattr(i,'name',i.key())
                     summary={'name':name,'url':url,'title':title,'description':description,'kind':i.kind(),'key':i.key()}
+                    
                     if hasattr(i,'image_thumbnail'):
                         summary['thumbnail']=url + 'thumbnail'
+                    
+                    if hasattr(i,'image'):
+                        summary['thumbnail']=url + 'mini'
                 
                 results.append(summary)
         
