@@ -82,6 +82,52 @@ def cachemethodoutput(meth):
             
     return _wrapper
 
+def cachefixedportlet(meth):
+    
+    def _wrapper(self):
+        output = None
+        isAdmin = getattr(self.request.principal,'ADMIN',False)
+        
+        key=self.request.SKIN_NAME+':portlet:'+self.portlet.getPath()
+        
+        if not isAdmin:
+            output = memcache.get(key)
+            if output:
+                return output
+        
+        output = meth(self)
+        
+        if not isAdmin:
+            memcache.set(key,output,86400)
+            
+        return output    
+            
+    return _wrapper
+
+def cachefixedview(meth):
+    
+    def _wrapper(self):
+
+        output = None
+        isAdmin = getattr(self.request.principal,'ADMIN',False)
+        
+        key=self.request.SKIN_NAME+':view:'+str(self.__class__)
+        
+        if not isAdmin:
+            output = memcache.get(key)
+            if output:
+                return output
+        
+        output = meth(self)
+        
+        if not isAdmin:
+            memcache.set(key,output,86400)
+            
+        return output    
+            
+    return _wrapper
+
+
 def cacheinstancemethodoutput(func):
     """ memcache caching decorator for instance methods"""
     def _wrapper(context, mcontext, REQUEST):
