@@ -173,13 +173,20 @@ class Base(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     modified = db.DateTimeProperty(auto_now=True)
     
-    @property
-    def __name__(self):
-        return self.name
+
+    def __get_name__(self):
+        p= getattr(self,'_v_name',None)
+        if p is None:
+            val=getattr(self,'name',None)
+            self._v_name = str(val)
+            p = self._v_name 
+        return p
     
-    @property
-    def __name__(self):
-        return self.name   
+    def __set_name__(self,name):
+        setattr(self,'_v_name',name)
+    
+    __name__ = property(__get_name__,__set_name__)
+    
     
     def __eq__(self,value):
         
@@ -203,7 +210,7 @@ class Base(db.Model):
     
     def __set_parent__(self,parent):
         setattr(self,'_v_parent',parent)
-        setattr(self,'_v_parent',parent)
+        #setattr(self,'_v_parent',parent)
     
     __parent__ = property(__get_parent__,__set_parent__)
        
@@ -1062,6 +1069,8 @@ class StaticList(FolderishMixin,ContentishMixin):
         
         for i in self.contentValues(REQUEST):
             if self.reparent:
+                i.__parent__ = self
+                i.__name__ = str(i.key())
                 url = self.reparent_absolute_url(i,REQUEST)
             else:
                 url = i.absolute_url(REQUEST)
@@ -1078,6 +1087,10 @@ class StaticList(FolderishMixin,ContentishMixin):
             
             if hasattr(i,'image_thumbnail'):
                 summary['thumbnail']=i.thumb_tag()
+                
+            
+            if hasattr(i,'image'):
+                summary['thumbnail']=url + 'mini'
         
         if not getattr(request.principal,'ADMIN',False):   
             root.setcached(cache_key,results)
@@ -1109,7 +1122,8 @@ class StaticList(FolderishMixin,ContentishMixin):
             if item:
                 if isinstance(item,NonContentishMixin) or self.reparent:
                     try:
-                        setattr(item,'__parent__',self)
+                        item.__parent__self
+                        item.__name__ = str(item.key())
                     except AttributeError:
                         pass
                 
@@ -1145,7 +1159,8 @@ class StaticList(FolderishMixin,ContentishMixin):
         if obj:
             if isinstance(obj,NonContentishMixin) or self.reparent:
                 try:
-                    setattr(obj,'__parent__',self)
+                    obj.__parent__ = self
+                    obj.__name__ = str(obj.key())
                 except AttributeError:
                     pass
             return obj
@@ -1221,7 +1236,11 @@ class QueryView(FolderishMixin,ContentishMixin):
         
         if obj:
             if isinstance(obj,NonContentishMixin) or self.reparent:
-                setattr(obj,'__parent__',self)
+                try:
+                    obj.__parent__ = self
+                    obj.__name__ = str(obj.key())
+                except AttributeError:
+                    pass
             return obj
         else:
             raise KeyError('Object not found')
@@ -1261,7 +1280,7 @@ class QueryView(FolderishMixin,ContentishMixin):
             summary = {}
             #BREAKPOINT()
             if isinstance(i,NonContentishMixin) or self.reparent:
-                
+                i.__name__ = str(i.key())
                 i.__parent__ = self
             
             if not getattr(i,'hidden',False):
