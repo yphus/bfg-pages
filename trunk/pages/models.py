@@ -80,12 +80,12 @@ class HasActions(object):
 def getPortlets(context,request,group=None,notag=False):
     root = context.getRoot()
         
-    cache_key = 'portlet:%s:%s:%s' % (str(context.getPath()),str(group),str(users.get_current_user()))
-
-    cached_result = root.getcached(cache_key)
-
-    if cached_result and not getattr(request.principal,'ADMIN',False):
-        return cached_result 
+##    cache_key = 'portlet:%s:%s:%s' % (str(context.getPath()),str(group),str(users.get_current_user()))
+##
+##    cached_result = root.getcached(cache_key)
+##
+##    if cached_result and not getattr(request.principal,'ADMIN',False):
+##        return cached_result 
 
     star_portlets = Portlet.all().filter('content = ',"*")
     kind_portlets = Portlet.all().filter('content = ',context.kind())
@@ -102,7 +102,7 @@ def getPortlets(context,request,group=None,notag=False):
             results.append( portlet.resolve(context,request,notag))
     results = '\n'.join(results)
     
-    root.setcached(cache_key,results)
+##    root.setcached(cache_key,results)
 
     return results   
 
