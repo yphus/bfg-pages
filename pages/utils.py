@@ -16,7 +16,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 
 from repoze.bfg.registry import populateRegistry
-
+from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
 from gae.utils import BREAKPOINT
 
 from zope.component import getSiteManager        
@@ -73,11 +73,22 @@ def cacheoutput(func):
 
 def cachemethodoutput(meth):
     def _wrapper(self):
+        
+        key = self.request.path_url.rstrip('/') 
+        isAdmin = getattr(self.request.principal,'ADMIN',False)
+        
+        if not isAdmin:
+            if IPOSTRequest.providedBy(self.request):
+                key = key + ":POST:" + str(self.request.str_POST)
+            output = memcache.get(key)
+            if output:
+                return output
+            
         output = meth(self)
         
-        if not getattr(self.request.principal,'ADMIN',False):
-            key=self.request.path_url.rstrip('/')
+        if not isAdmin:
             memcache.set(key,output,86400)
+            
         return output    
             
     return _wrapper
