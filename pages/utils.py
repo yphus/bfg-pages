@@ -33,30 +33,30 @@ class ActionContext(object):
         self.request = req 
         
 
-def get_cache():
-    if users.is_current_user_admin():
-        return None
-    env = dict(os.environ)
-    env["wsgi.input"] = sys.stdin
-    env["wsgi.errors"] = sys.stderr
-    env["wsgi.version"] = (1, 0)
-    env["wsgi.run_once"] = True
-    env["wsgi.url_scheme"] = wsgiref.util.guess_scheme(env)
-    env["wsgi.multithread"] = False
-    env["wsgi.multiprocess"] = False
-    req = Request(env)
-    cached_resp = memcache.get(req.path_url.rstrip('/'))
-    
-    if cached_resp:
-        def cache_app(env,start_resp):
-            logging.info('returning cached page (%s)' % req.path_url)
-            #BREAKPOINT()
-            write_handle = start_resp(cached_resp.status,(cached_resp.headers.items()))
-            write_handle(cached_resp.body)
-        return cache_app
-    else:
-
-        return None
+##def get_cache():
+##    if users.is_current_user_admin():
+##        return None
+##    env = dict(os.environ)
+##    env["wsgi.input"] = sys.stdin
+##    env["wsgi.errors"] = sys.stderr
+##    env["wsgi.version"] = (1, 0)
+##    env["wsgi.run_once"] = True
+##    env["wsgi.url_scheme"] = wsgiref.util.guess_scheme(env)
+##    env["wsgi.multithread"] = False
+##    env["wsgi.multiprocess"] = False
+##    req = Request(env)
+##    cached_resp = memcache.get(req.path_url.rstrip('/'))
+##    
+##    if cached_resp:
+##        def cache_app(env,start_resp):
+##            logging.info('returning cached page (%s)' % req.path_url)
+##            #BREAKPOINT()
+##            write_handle = start_resp(cached_resp.status,(cached_resp.headers.items()))
+##            write_handle(cached_resp.body)
+##        return cache_app
+##    else:
+##
+##        return None
 
 
 def cacheoutput(func):
@@ -66,7 +66,7 @@ def cacheoutput(func):
         output = func(context, REQUEST)
         if not getattr(REQUEST.principal,'ADMIN',False):
             key=REQUEST.path_url.rstrip('/')
-            
+            logging.debug('cacheoutput: %s - %s' % (key,repr(output)))
             memcache.set(key,output,86400)
         return output    
             
@@ -81,6 +81,9 @@ def cachemethodoutput(meth):
         if not isAdmin:
             if IPOSTRequest.providedBy(self.request):
                 key = key + ":POST:" + str(self.request.str_POST)
+            
+            
+            
             output = memcache.get(key)
             if output:
                 return output
@@ -88,6 +91,7 @@ def cachemethodoutput(meth):
         output = meth(self)
         
         if not isAdmin:
+            logging.debug('cachemethodoutput: %s' % (key))
             memcache.set(key,output,86400)
             
         return output    
@@ -110,6 +114,7 @@ def cachefixedportlet(meth):
         output = meth(self)
         
         if not isAdmin:
+            logging.debug('cachefixedportlet: %s' % (key))
             memcache.set(key,output,86400)
             
         return output    
@@ -119,7 +124,7 @@ def cachefixedportlet(meth):
 def cachefixedview(meth):
     
     def _wrapper(self):
-
+        
         output = None
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
@@ -133,6 +138,7 @@ def cachefixedview(meth):
         output = meth(self)
         
         if not isAdmin:
+            logging.debug('cachefixedview: %s' % (key))
             memcache.set(key,output,86400)
             
         return output    
