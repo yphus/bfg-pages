@@ -76,7 +76,7 @@ def cacheoutput(func):
 def cacheviewfragment(meth):
     def _wrapper(self):
         
-        key = self.request.url.rstrip('/')+':FRAGMENT:'+repr(self.view) 
+        key = self.request.url.rstrip('/')+':FRAGMENT:'+repr(self.view.__class__) 
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
         if not isAdmin:
@@ -127,7 +127,7 @@ def cachefixedportlet(meth):
         output = None
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
-        key=self.request.SKIN_NAME+':portlet:'+self.portlet.getPath()
+        key=self.request.SKIN_NAME+':PORTLET:'+self.portlet.getPath()
         
         if not isAdmin:
             output = memcache.get(key)
@@ -151,7 +151,7 @@ def cachefixedview(meth):
         output = None
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
-        key=self.request.SKIN_NAME+':view:'+str(self.__class__)
+        key=self.request.SKIN_NAME+':VIEW:'+str(self.__class__)
         
         if not isAdmin:
             output = memcache.get(key)
