@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.repoze.org/bfg">
 
     <!-- this must be included for the view declarations to work -->
-    <include package="repoze.bfg.includes" />
+    <!-- <include package="repoze.bfg.includes" /> -->
 
     <subscriber
         for="repoze.bfg.interfaces.INewRequest"
@@ -42,9 +42,9 @@
         view=".views.root_view"
         name="view"/>
 
-    <view
+    <!-- <view
         for=".interfaces.IRoot"
-        view=".views.root_view"/>
+        view=".views.root_view"/> -->
 
     <view
         for=".interfaces.IRoot"
@@ -57,11 +57,11 @@
         view=".views.contents"
         name="contents"/>
 
-    <view
+    <!-- <view
         for=".interfaces.IFolder"
         view=".views.folder_view"
         name="view"
-        />
+        /> -->
 
     <view
         for=".interfaces.IFolder"
@@ -73,17 +73,17 @@
         name="@tmp"
         />
 
-    <view
+    <!-- <view
         for="*"
         view=".views.edit_view"
         name="edit"
-        />
+        /> -->
 
-    <view
+    <!-- <view
         for="*"
         view=".views.add_view"
         name="add"
-        />
+        /> -->
 
     <view
         for=".interfaces.IContent"
@@ -143,7 +143,7 @@
         name="view"/>
 
 
-    <adapter
+    <!-- <adapter
         factory="pages.schema.FolderStructure"
         for="pages.interfaces.IFolder"
         provides="pages.schema.IStructure"/>  
@@ -199,6 +199,6 @@
     <adapter
         factory="pages.schema.PortletStructure"
         for="pages.interfaces.IPortlet"
-        provides="pages.schema.IStructure"/>  
+        provides="pages.schema.IStructure"/>  -->
 
 </configure>
