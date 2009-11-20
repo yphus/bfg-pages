@@ -72,9 +72,32 @@ def cacheoutput(func):
             
     return _wrapper
 
+
+def cacheviewfragment(meth):
+    def _wrapper(self):
+        
+        key = self.request.url.rstrip('/')+':FRAGMENT:'+repr(self.view) 
+        isAdmin = getattr(self.request.principal,'ADMIN',False)
+        
+        if not isAdmin:
+            
+            output = memcache.get(key)
+            if output:
+                return output
+            
+        output = meth(self)
+        
+        if not isAdmin:
+            logging.debug('cacheviewfragment: %s' % (key))
+            memcache.set(key,output,86400)
+            
+        return output    
+            
+    return _wrapper
+
 def cachemethodoutput(meth):
     def _wrapper(self):
-        #BREAKPOINT()
+        
         key = self.request.url.rstrip('/') 
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
