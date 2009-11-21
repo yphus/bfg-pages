@@ -451,7 +451,7 @@ class FolderishMixin(db.Model):
         for i in self.contentValues(REQUEST):            
             yield i.name,i
             
-    def content_summary(self,REQUEST=None,limit=None):
+    def content_summary(self,REQUEST=None,limit=None,kind=None):
         
         results = []
         root = self.getRoot()
@@ -467,12 +467,12 @@ class FolderishMixin(db.Model):
        
         if cached_result and not getattr(request.principal,'ADMIN',False) :
             return cached_result 
-        values = self.contentValues(REQUEST)
+        values = self.contentValues(REQUEST,kind=kind)
         
         if limit:
             values = values[0:min(limit,len(values))]
         
-        for i in self.contentValues(REQUEST):
+        for i in self.contentValues(REQUEST,kind=kind):
             url = i.absolute_url(REQUEST)
             title = i.title_or_id()
             description = i.description or ''
