@@ -15,7 +15,7 @@ from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
 import interfaces
 import models
 from utils import cacheoutput
-
+import logging
 import pages
 from pages.utils import make_time_header
 

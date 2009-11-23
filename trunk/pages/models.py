@@ -247,7 +247,10 @@ class Base(db.Model):
         viewdef = traverse(self,path)
         if REQUEST is None:
             REQUEST=self._request()
-        view = zope.component.getMultiAdapter((viewdef['context'],REQUEST),\
+        #BREAKPOINT()    
+        gsm = zope.component.getSiteManager()
+        #BREAKPOINT()
+        view = gsm.getMultiAdapter((viewdef['context'],REQUEST),\
                                repoze.bfg.interfaces.IView,viewdef['view_name'])
         return view
 
@@ -1097,7 +1100,7 @@ class StaticList(FolderishMixin,ContentishMixin):
             
         return results  
 
-    def contentValues(self,REQUEST=None):
+    def contentValues(self,REQUEST=None,kind=None):
         results=[]
         for i in self.list_items.split('\n'):
             try:
