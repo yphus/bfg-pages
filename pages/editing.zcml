@@ -1,0 +1,89 @@
+<configure xmlns="http://namespaces.repoze.org/bfg">
+    <view
+        for="*"
+        view=".views.fileupload_cache_view"
+        name="@tmp"
+        />
+
+    <view
+        for="*"
+        view=".views.edit_view"
+        name="edit"
+        />
+
+    <view
+        for="*"
+        view=".views.add_view"
+        name="add"
+        /> 
+
+    <view
+        for=".interfaces.IContent"
+        view=".views.delete_content"
+        name="delete_content"
+        />
+
+    <view
+        for=".interfaces.IFolder"
+        view=".views.delete_content"
+        name="delete_content"
+        />
+    <adapter
+        factory="pages.schema.FolderStructure"
+        for="pages.interfaces.IFolder"
+        provides="pages.schema.IStructure"/>  
+
+    <adapter
+        factory="pages.schema.RootStructure"
+        for="pages.interfaces.IRoot"
+        provides="pages.schema.IStructure"/>  
+
+    <adapter
+        factory="pages.schema.PageStructure"
+        for="pages.interfaces.IPage"
+        provides="pages.schema.IStructure"/>  
+
+    <adapter
+        factory="pages.schema.NewsStructure"
+        for="pages.interfaces.INews"
+        provides="pages.schema.IStructure"/>  
+
+    <adapter
+        factory="pages.schema.FileStructure"
+        for="pages.interfaces.IFile"
+        provides="pages.schema.IStructure"/>  
+
+    <adapter
+        factory="pages.schema.ImageStructure"
+        for="pages.interfaces.IImage"
+        provides="pages.schema.IStructure"/>  
+
+
+    <adapter
+        factory="pages.schema.PicassaGalleryStructure"
+        for="pages.interfaces.IPicassaGallery"
+        provides="pages.schema.IStructure"/> 
+
+    <adapter
+        factory="pages.schema.StaticListStructure"
+        for="pages.interfaces.IStaticListView"
+        provides="pages.schema.IStructure"/> 
+
+    <adapter
+        factory="pages.schema.QueryViewStructure"
+        for="pages.interfaces.IQueryView"
+        provides="pages.schema.IStructure"/> 
+
+
+    <adapter
+        factory="pages.schema.ActionStructure"
+        for="pages.interfaces.IAction"
+        provides="pages.schema.IStructure"/>  
+
+    
+    <adapter
+        factory="pages.schema.PortletStructure"
+        for="pages.interfaces.IPortlet"
+        provides="pages.schema.IStructure"/>  
+
+</configure>
