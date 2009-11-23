@@ -73,17 +73,17 @@
         name="@tmp"
         />
 
-    <!-- <view
+    <view
         for="*"
         view=".views.edit_view"
         name="edit"
-        /> -->
+        />
 
-    <!-- <view
+    <view
         for="*"
         view=".views.add_view"
         name="add"
-        /> -->
+        /> 
 
     <view
         for=".interfaces.IContent"
@@ -143,7 +143,7 @@
         name="view"/>
 
 
-    <!-- <adapter
+    <adapter
         factory="pages.schema.FolderStructure"
         for="pages.interfaces.IFolder"
         provides="pages.schema.IStructure"/>  
@@ -199,6 +199,6 @@
     <adapter
         factory="pages.schema.PortletStructure"
         for="pages.interfaces.IPortlet"
-        provides="pages.schema.IStructure"/>  -->
+        provides="pages.schema.IStructure"/> 
 
 </configure>
