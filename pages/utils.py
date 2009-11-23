@@ -83,6 +83,7 @@ def cacheviewfragment(meth):
             
             output = memcache.get(key)
             if output:
+                logging.debug('got from cacheviewfragment: %s' % (key))
                 return output
             
         output = meth(self)
@@ -109,6 +110,7 @@ def cachemethodoutput(meth):
             
             output = memcache.get(key)
             if output:
+                logging.debug('got from cachemethodoutput: %s' % (key))
                 return output
             
         output = meth(self)
@@ -132,6 +134,7 @@ def cachefixedportlet(meth):
         if not isAdmin:
             output = memcache.get(key)
             if output:
+                logging.debug('got from cachefixedportlet: %s' % (key))
                 return output
         
         output = meth(self)

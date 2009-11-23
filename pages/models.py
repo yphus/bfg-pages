@@ -571,7 +571,7 @@ class FolderishMixin(db.Model):
         return name,obj
     
     def __getitem__(self,name):
-        
+        #BREAKPOINT()
         name = unquote(unicode(name))
         
         if name in self.children_names:
