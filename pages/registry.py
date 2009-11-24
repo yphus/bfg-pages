@@ -2,10 +2,11 @@ import copy
 
 from zope.interface import Interface
 from zope.interface import implements
-import zope.component
+#import zope.component
 from repoze.bfg.interfaces import IRequest
 
 _marker = object()
+_registry = None
 
 
 def registerEventListener(event_iface=Interface):
@@ -34,9 +35,7 @@ def registerView(name, result='', view=None, for_=(Interface, Interface)):
     with code that wants to call,
     e.g. ``repoze.bfg.view.render_view_to_response``."""
     if view is None:
-        def view(context, request):
-            from webob import Response
-            return Response(result)
+        raise ValueError('view must have a value, %s (%s)' % (name,repr(for_)))
     from repoze.bfg.interfaces import IView
     return registerAdapter(view, for_, IView, name)
 
@@ -77,7 +76,8 @@ def registerUtility(impl, iface=Interface, name=''):
     <http://www.muthukadan.net/docs/zca.html>`_ for more information
     about ZCA utilities."""
     #import zope.component 
-    gsm = zope.component.getSiteManager()
+    #gsm = zope.component.getSiteManager()
+    gsm = _registry
     gsm.registerUtility(impl, iface, name=name)
     return impl
 
@@ -98,8 +98,9 @@ def registerAdapter(impl, for_=Interface, provides=Interface, name=''):
     about ZCA adapters."""
     #import zope.component
     
-    gsm = zope.component.getSiteManager()
-    #
+    #gsm = zope.component.getSiteManager()
+    gsm = _registry
+
     if not isinstance(for_, (tuple, list)):
         for_ = (for_,)
     gsm.registerAdapter(impl, for_, provides, name=name)
@@ -117,8 +118,9 @@ def registerSubscriber(subscriber, iface=Interface):
     passed to underlying zca registerHandler query.  See `The ZCA book
     <http://www.muthukadan.net/docs/zca.html>`_ for more information
     about ZCA subscribers."""
-    import zope.component
-    gsm = zope.component.getSiteManager()
+    #import zope.component
+    #gsm = zope.component.getSiteManager()
+    gsm = _registry
     if not isinstance(iface, (tuple, list)):
         iface = (iface,)
     gsm.registerHandler(subscriber, iface)
