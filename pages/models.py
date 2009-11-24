@@ -1045,7 +1045,7 @@ class StaticList(FolderishMixin,ContentishMixin):
     def template(self):
         if self.custom_view:
             return self.custom_view
-        return super(QueryView,self).template() 
+        return super(StaticList,self).template() 
 
     
     def reparent_absolute_url(self,obj,request):
