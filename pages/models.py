@@ -41,6 +41,8 @@ import utils
 import getimageinfo
 import logging
 
+import registry
+
 class DuplicateName(Exception):
     pass
 
@@ -248,6 +250,7 @@ class Base(db.Model):
         if REQUEST is None:
             REQUEST=self._request()
         #BREAKPOINT()    
+        #gsm = registry._registry
         gsm = zope.component.getSiteManager()
         #BREAKPOINT()
         view = gsm.getMultiAdapter((viewdef['context'],REQUEST),\
@@ -1080,7 +1083,7 @@ class StaticList(FolderishMixin,ContentishMixin):
             title = i.title_or_id()
             description = i.description or ''
             summary={'name':i.name,'url':url,'title':title,
-                'description':description,
+                'key':str(i.key()),'description':description,
                 'kind':i.kind(),
                 'hidden':getattr(i,'hidden',False),
                 'modified': i.modified,
@@ -1285,7 +1288,7 @@ class QueryView(FolderishMixin,ContentishMixin):
             if isinstance(i,NonContentishMixin) or self.reparent:
                 i.__name__ = str(i.key())
                 i.__parent__ = self
-            
+            summary['key']=str(i.key())
             if not getattr(i,'hidden',False):
                 url = ""
                 if self.reparent:
