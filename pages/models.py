@@ -38,6 +38,7 @@ import interfaces
 from gae.utils import BREAKPOINT
 
 import utils
+from utils import retry
 import getimageinfo
 import logging
 
@@ -203,7 +204,8 @@ class Base(db.Model):
     def __hash__(self):
        
         return hash(str(self.key()))    
-       
+    
+    @retry(Exception,tries=3,delay=0.5)   
     def __get_parent__(self):
         p= getattr(self,'_v_parent',None)
         if p is None:
@@ -443,10 +445,9 @@ class FolderishMixin(db.Model):
         
         return list(self.children_names)
     
-    
+    @retry(Exception,tries=3,delay=0.5)
     def _get(self,key):
         root = self.root
-        
         kind = key.kind()
         result= root.models()[kind].get(key)
         
@@ -575,6 +576,7 @@ class FolderishMixin(db.Model):
         name = self.children_names.pop(idx)
         self.put()
         return name,obj
+    
     
     def __getitem__(self,name):
         #BREAKPOINT()
