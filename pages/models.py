@@ -1054,6 +1054,9 @@ class StaticList(FolderishMixin,ContentishMixin):
         url = "%s%s/" % (self.absolute_url(request),str(obj.key()))
         return url
 
+    def resultwrapper(context,item):
+        return {}
+
     def content_summary(self,REQUEST=None,limit=None):
         
         results = []
