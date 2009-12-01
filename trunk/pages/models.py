@@ -1029,6 +1029,25 @@ class Folder(FolderishMixin,ContentishMixin):
 ##        
 ##        #return super(Folder,self).__call__(REQUEST)
     
+
+class ResultAdapter(dict):
+    """Wraps result sets"""
+    def __init__(self,obj,dct):
+        self._obj = obj
+        super(ResultAdapter,self).__init__(dct)
+
+    def __getattribute__(self,name):
+        if name in self:
+            return self[name]
+        else:
+            try:
+                return super(ResultAdapter,self).__getattribute__(name)
+            except AttributeError:
+                return getattr(self._obj,name)
+
+    def mediaBoxInfo(self):
+        return {}
+
     
     
 class StaticList(FolderishMixin,ContentishMixin):
@@ -1054,8 +1073,9 @@ class StaticList(FolderishMixin,ContentishMixin):
         url = "%s%s/" % (self.absolute_url(request),str(obj.key()))
         return url
 
-    def resultwrapper(context,item):
-        return {}
+    def resultwrapper(self,item):
+        """Place holder method."""
+        return ResultAdapter(self,dict())
 
     def content_summary(self,REQUEST=None,limit=None):
         
