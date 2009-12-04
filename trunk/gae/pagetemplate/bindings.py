@@ -30,5 +30,7 @@ def render_template_to_response(path, **kw):
     names and return a Response object. """
     
     result = render_template(path, **kw)
-    return Response(result)
-
+    #return Response(result)
+    response = Response(result)
+    response.charset = 'utf-8' # Make IE happy
+    return response
