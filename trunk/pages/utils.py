@@ -129,8 +129,8 @@ def cachefixedportlet(meth):
         output = None
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
-        key=self.request.SKIN_NAME+':PORTLET:'+self.portlet.getPath()
-        
+        key=self.request.host+':'+self.request.SKIN_NAME+':PORTLET:'+self.portlet.getPath()
+       
         if not isAdmin:
             output = memcache.get(key)
             if output:
@@ -154,7 +154,7 @@ def cachefixedview(meth):
         output = None
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
-        key=self.request.SKIN_NAME+':VIEW:'+str(self.__class__)
+        key=self.request.host+':'+self.request.SKIN_NAME+':VIEW:'+str(self.__class__)
         
         if not isAdmin:
             output = memcache.get(key)
