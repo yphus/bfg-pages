@@ -54,7 +54,7 @@ class HasActions(object):
         
         root = self.getRoot()
         
-        cache_key = 'action:%s:%s:%s' % (str(self.getPath()),str(group),str(users.get_current_user()))
+        cache_key = '%s:action:%s:%s:%s' % (request.host,str(self.getPath()),str(group),str(users.get_current_user()))
 
         cached_result = root.getcached(cache_key)
         
