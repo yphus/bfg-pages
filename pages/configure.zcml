@@ -16,6 +16,10 @@
         for="zope.lifecycleevent.ObjectCreatedEvent"
         handler=".subscribers.manage_cache"/>
 
+    <subscriber
+        for="zope.lifecycleevent.ObjectCreatedEvent"
+        handler=".subscribers.init_session"/>
+
     <!-- view for=".models.Root"
         view=".views.setup_view"
         name="setup" / -->
