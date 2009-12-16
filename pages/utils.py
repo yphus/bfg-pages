@@ -58,6 +58,36 @@ class ActionContext(object):
 ##
 ##        return None
 
+def updateSessionCacheInfo(request,key='',info={},action=1):
+    """Updates session cache key information for cache management view.
+       session 'cache_info' is a record of the current cache keys. Cache keys are
+       represented in the sessin by 'category' and contain at least a 'key' and a
+       descriptive 'title'.
+
+       Parameters:
+         info: Dictionary with cache info, at least 'key' and 'title'
+         action: Value indicating whether to add (1) or to delete (0) the information.
+    """
+    session = request.environ.get('beaker.session',None)
+    if not session or not key:
+        return
+    cache_info = session.get('cache_info',dict())
+    #cache_info = dict()
+    #if 'cache_info' in session.keys():
+    #    cache_info = session['cache_info']
+    if key in cache_info.keys():
+        # Nothing to do
+        if action==0:
+            # Delete key.
+            cache_info.pop(key)
+            session['cache_info'] = cache_info
+            session.save()
+        return
+    # Handle adding.
+    cache_info[key] = info
+    session['cache_info'] = cache_info
+    session.save()
+
 
 def cacheoutput(func):
     """ memcache caching decorator"""
@@ -68,6 +98,9 @@ def cacheoutput(func):
             key=REQUEST.path_url.rstrip('/')
             logging.debug('cacheoutput: %s - %s' % (key,repr(output)))
             memcache.set(key,output,86400)
+        else:
+            key=REQUEST.path_url.rstrip('/')
+            updateSessionCacheInfo(REQUEST,key,{'title':context.name})
         return output    
             
     return _wrapper
@@ -80,11 +113,12 @@ def cacheviewfragment(meth):
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
         if not isAdmin:
-            
             output = memcache.get(key)
             if output:
                 logging.debug('got from cacheviewfragment: %s' % (key))
                 return output
+        else:
+            updateSessionCacheInfo(self.request,key,{'title':'Fragment'})
             
         output = meth(self)
         
@@ -106,12 +140,14 @@ def cachemethodoutput(meth):
             if IPOSTRequest.providedBy(self.request):
                 key = key + ":POST:" + str(self.request.str_POST)
             
-            
-            
             output = memcache.get(key)
             if output:
                 logging.debug('got from cachemethodoutput: %s' % (key))
                 return output
+        else:
+            if IPOSTRequest.providedBy(self.request):
+                key = key + ":POST:" + str(self.request.str_POST)
+            updateSessionCacheInfo(self.request,key,{'title':'Method'})
             
         output = meth(self)
         
@@ -136,6 +172,8 @@ def cachefixedportlet(meth):
             if output:
                 logging.debug('got from cachefixedportlet: %s' % (key))
                 return output
+        else:
+            updateSessionCacheInfo(self.request,key,{'title':'Portlet'})
         
         output = meth(self)
         
@@ -160,6 +198,8 @@ def cachefixedview(meth):
             output = memcache.get(key)
             if output:
                 return output
+        else:
+            updateSessionCacheInfo(self.request,key,{'title':'View'})
         
         output = meth(self)
         
