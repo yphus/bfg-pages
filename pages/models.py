@@ -469,7 +469,7 @@ class FolderishMixin(db.Model):
             request = self._request()
             
             
-        cache_key = str(self.getPath().rstrip('/'))+":summary"
+        cache_key = str(self.absolute_url().rstrip('/'))+":summary"
         cached_result = root.getcached(cache_key)
        
         if cached_result and not getattr(request.principal,'ADMIN',False) :
@@ -1088,7 +1088,7 @@ class StaticList(FolderishMixin,ContentishMixin):
             request = self._request()
             
             
-        cache_key = str(self.getPath().rstrip('/'))+":summary"
+        cache_key = str(self.absolute_url().rstrip('/'))+":summary"
         cached_result = root.getcached(cache_key)
        
         if cached_result and not getattr(request.principal,'ADMIN',False) :
@@ -1284,7 +1284,7 @@ class QueryView(FolderishMixin,ContentishMixin):
             
         
         root = self.getRoot()
-        cache_key = str(self.getPath().rstrip())+":summary"
+        cache_key = str(self.absolute_url().rstrip())+":summary"
         cached_result = root.getcached(cache_key)
         
         if cached_result and not getattr(request.principal,'ADMIN',False) :
