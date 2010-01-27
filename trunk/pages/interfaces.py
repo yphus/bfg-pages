@@ -67,4 +67,8 @@ class IQueryView(IContentish):
 class IPicassaGallery(IContentish):
     """Gallery"""
    
+
+class IBanner(Interface):
+    """Marker for dynamic html to display a banner.
+    """
                
