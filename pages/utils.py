@@ -117,13 +117,37 @@ def cacheviewfragment(meth):
             if output:
                 logging.debug('got from cacheviewfragment: %s' % (key))
                 return output
-        else:
-            updateSessionCacheInfo(self.request,key,{'title':'Fragment'})
+
+        updateSessionCacheInfo(self.request,key,{'title':'Fragment'})
             
         output = meth(self)
         
         if not isAdmin:
             logging.debug('cacheviewfragment: %s' % (key))
+            memcache.set(key,output,86400)
+            
+        return output    
+            
+    return _wrapper
+
+def cachemethodreturn(meth):
+    def _wrapper(self):
+        
+        key = self.request.url.rstrip('/')+':METHOD:'+meth.__name__ 
+        isAdmin = getattr(self.request.principal,'ADMIN',False)
+        
+        if not isAdmin:
+            output = memcache.get(key)
+            if output:
+                logging.debug('got from cachemethodreturn: %s' % (key))
+                return output
+
+        updateSessionCacheInfo(self.request,key,{'title':'Fragment'})
+            
+        output = meth(self)
+        
+        if not isAdmin:
+            logging.debug('cachemethodreturn: %s' % (key))
             memcache.set(key,output,86400)
             
         return output    
@@ -147,7 +171,8 @@ def cachemethodoutput(meth):
         else:
             if IPOSTRequest.providedBy(self.request):
                 key = key + ":POST:" + str(self.request.str_POST)
-            updateSessionCacheInfo(self.request,key,{'title':'Method'})
+
+        updateSessionCacheInfo(self.request,key,{'title':'Method'})
             
         output = meth(self)
         
@@ -172,8 +197,8 @@ def cachefixedportlet(meth):
             if output:
                 logging.debug('got from cachefixedportlet: %s' % (key))
                 return output
-        else:
-            updateSessionCacheInfo(self.request,key,{'title':'Portlet'})
+
+        updateSessionCacheInfo(self.request,key,{'title':'Portlet'})
         
         output = meth(self)
         
@@ -198,8 +223,8 @@ def cachefixedview(meth):
             output = memcache.get(key)
             if output:
                 return output
-        else:
-            updateSessionCacheInfo(self.request,key,{'title':'View'})
+
+        updateSessionCacheInfo(self.request,key,{'title':'View'})
         
         output = meth(self)
         
