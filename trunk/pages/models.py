@@ -10,6 +10,7 @@ import zope.interface
 from zope.interface import implements,Interface
 from zope.tales.engine import Engine
 from zope.interface.declarations import getObjectSpecification
+from zope.component import queryMultiAdapter
 
 import repoze.bfg.interfaces
 from repoze.bfg.traversal import model_path, find_model, find_root, traverse
@@ -435,6 +436,11 @@ class FolderishMixin(db.Model):
             results= [i for i in db.get( self.children_keys) if i != None]
             if ct:
                 results= [i for i in results if i.kind() in ct]
+            for i in results:
+                try:
+                    i.__parent__ = self
+                except AttributeError:
+                    logging.info('***could not set parent on %s' % repr(i))
             results.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
             
             return results
@@ -585,6 +591,7 @@ class FolderishMixin(db.Model):
         if name in self.children_names:
             idx = self.children_names.index(name)
             result = self._get(self.children_keys[idx])
+            result.__parent__ = self
             return result
         else:
             raise KeyError(name)
@@ -599,9 +606,9 @@ class FolderishMixin(db.Model):
         for i in self.contentValues():
             yield i
     
-    @property    
-    def __parent__(self):
-        return self.parent_
+    #@property    
+    #def __parent__(self):
+    #    return self.parent_
         
      
 class Root(FolderishMixin, ContentishMixin, HasActions):
@@ -770,6 +777,15 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
     def getPathElements(self,trueParent=False):
         return [self]
     
+    def get_banner(self,context,request):
+        """Get a dynamic piece of html representing a banner. this may for
+           example be a style fragment with a random banner image string used
+           as part of the main_template header.
+        """
+        ba = queryMultiAdapter((context,request), interfaces.IBanner)
+        if not ba:
+            return ''
+        return ba()
     
 
 class Action(ContentishMixin):
