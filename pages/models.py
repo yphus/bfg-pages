@@ -245,8 +245,6 @@ class Base(db.Model):
             return parent.acquire(name)
         
         return None
-        
-    
      
     def traverse_view(self,path,REQUEST=None):
         viewdef = traverse(self,path)
