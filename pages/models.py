@@ -752,7 +752,10 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
     
     def setcached(self,key,obj,timeout=36000):
         #BREAKPOINT()
-        memcache.set(key,obj,timeout)
+        try:
+            memcache.set(key,obj,timeout)
+        except:
+            logging.error('Failed to cache key "%s": %s'%(repr(key),repr(obj)))
         
     def delcached(self,key):
         
