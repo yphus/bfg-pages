@@ -754,8 +754,9 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
         #BREAKPOINT()
         try:
             memcache.set(key,obj,timeout)
-        except:
-            logging.error('Failed to cache key "%s": %s'%(repr(key),repr(obj)))
+        except Exception,e:
+            logging.error('Failed to cache key "%s": %s, Exception: %s' % \
+                                                 (repr(key),repr(obj),repr(e)))
         
     def delcached(self,key):
         
