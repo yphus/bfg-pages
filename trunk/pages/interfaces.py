@@ -72,3 +72,7 @@ class IBanner(Interface):
     """Marker for dynamic html to display a banner.
     """
                
+class IPortletChange(Interface):
+    """Marker for dynamic replacement of portlets for a specific context.
+    """
+               
