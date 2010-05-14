@@ -789,6 +789,15 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
             return ''
         return ba()
     
+    def get_context_portlets(self,context,request):
+        """Get dynamic portlet replacements for a given context.
+        """
+        pa = queryMultiAdapter((context,request), interfaces.IPortletChange)
+        if not pa:
+            #logging.info('***No pa adapter for %s' % repr(context))
+            return ''
+        return pa()
+    
 
 class Action(ContentishMixin):
     """ """
