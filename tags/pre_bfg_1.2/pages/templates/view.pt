@@ -1,0 +1,21 @@
+<html >
+   <head>
+    
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div >
+         
+
+               <h3 tal:content="context/title_or_id"/> 
+               <div>Kind: <tal:block tal:content="context/kind"/></div>
+               <div>Description: <div tal:content="context/description"/></div>
+               
+               
+               <div tal:content="structure context/body|nothing"/>
+         
+            </div>
+        </tal:block>
+   </body>
+</html>

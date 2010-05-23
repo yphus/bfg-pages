@@ -1,0 +1,19 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="body">
+              
+               <h1 tal:content="context/title"/>
+               
+               <div><i tal:content="context/description"/></div><p/>
+               <div tal:content="structure context/body|nothing"/><p/>
+               <div tal:define="author context/author|string:anon"><i tal:content="string:posted by ${author} on ${context/news_date}"/></div>
+               <div style="clear: both"></div>      
+            </div>
+        </tal:block>
+   </body>
+</html>

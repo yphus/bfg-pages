@@ -1,0 +1,3 @@
+<div>
+  <tal:block tal:omit-tag="" metal:use-macro="template_path/utils/macros/news"/>
+</div>

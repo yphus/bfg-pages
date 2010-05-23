@@ -1,0 +1,195 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal" 		  
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    metal:define-macro="main">
+<head>
+
+</head>
+<body>
+    <div metal:define-macro="news">
+        <h3>Latest News</h3>
+        <tal:block tal:define="newsitems python: list(root.filteredQuery('News').order('-news_date'));
+                         more python: len(newsitems) > 5;
+                         newsitems python: newsitems[0:min(5,len(newsitems))]">
+           <ul>
+            <li tal:repeat="item newsitems">
+                <b><a href="" tal:attributes="href python:item.absolute_url(request); 
+                        title item/title_or_id"
+                      tal:content="item/title_or_id"/></b>
+                <p tal:content="item/description"/> 
+                
+            </li>
+           </ul>
+           <div><span style="float: right;"><a href="/news"  title="More news">More news</a></span></div> 
+        </tal:block> 
+    </div>
+    
+    <metal:block metal:define-macro="menu">
+        <h1>About</h1>
+        <tal:block condition="python: 'menu' in root.contentNames()">
+        <tal:block tal:content="structure root/menu/body"/>
+        </tal:block>
+
+    </metal:block>
+
+     <metal:block metal:define-macro="left_body">
+        
+        <tal:block condition="python: 'left_body' in root.contentNames(request)">
+        <tal:block tal:content="structure root/left_body/body"/>
+        </tal:block>
+
+    </metal:block>
+    <metal:block metal:define-macro="header">
+         <div id="banner">
+             <a  href="#" tal:attributes="href root/getPath; title root/title"  tal:on-error="string: header error">
+               <IMG src="" tal:attributes="src banner_url;" border="0" width="947" height="118">
+             </a>
+         </div>
+        
+         <div id="actions"  metal:use-macro="template_path/utils/macros/heading_tabs"/> 
+         
+    </metal:block>
+
+    <span metal:define-macro="script">
+        SCRIPT SUMMARY
+    </span>
+
+    <div tal:omit-tag="" metal:define-macro="breadcrumbs">
+        <div id="breadcrumbs" class="yui-u first"> 
+		<tal:block tal:condition="python: root != context" 
+		    tal:repeat="elem python:context.getPathElements()">
+		    <tal:block tal:condition="python: not repeat['elem'].end()">
+			<a id="breadcrumbs" href="" tal:attributes="href python:elem.absolute_url(request)" 
+			    tal:content="python: elem.title_or_id()"/> / </tal:block>
+		    <tal:block tal:condition="python: repeat['elem'].end()"><span tal:content="python: elem.title_or_id()"/> 
+		    </tal:block>
+		</tal:block>
+        </div>
+    </div>
+
+       
+    <div tal:omit-tag="" metal:define-macro="contents_nav" 
+         tal:define="items python:[i for i in context.getParent().content_summary(request) if not i.get('hidden',False)]"
+         tal:condition="python:len(items) > 1" tal:on-error="nothing">
+      <div id="body-right-content" >
+         <h3>Contents</h3>
+          
+           <ul>
+              <li tal:repeat="item items">
+                    <a href="#" tal:attributes="href string:${item/url}view;
+                                                title item/title" tal:content="item/title"/>
+              </li>
+           </ul>
+           &nbsp;
+        
+      </div>
+    </div>
+
+    <div tal:omit-tag="" metal:define-macro="admin_actions">
+      
+      <tal:block tal:condition="request/principal/ADMIN|nothing" tal:on-error="string:">
+        <h3>Admin</h3>
+        <ul>    
+            <li tal:repeat="action python: context.getActions(request,group='admin')" tal:on-error="string:">
+                <tal:block tal:replace="structure action" />
+            </li>
+        </ul>
+      </tal:block>
+         
+    </div>
+
+<div tal:omit-tag="" metal:define-macro="heading_tabs">
+        <div id="navigation" class="header-tabs">                 
+            <ul>
+                <li><a href="/" class="None" name="home" title="Home">Home</a></li>
+
+                <tal:block tal:repeat="action python: context.getRoot().heading_tabs(request,group='heading')">
+
+                <li tal:define="first repeat/action/start;
+                                first python: first and 'first-of-type' or ''">
+                    <tal:block tal:replace="structure action"  tal:on-error="string: error"/>
+                </li> 
+                </tal:block>
+            </ul>
+        </div> 
+    </div>
+
+
+
+    <div id="admin_menu"  class="yui-u" metal:define-macro="heading_actions">
+       <tal:block tal:condition="request/principal/ADMIN|nothing">
+        <script type="text/javascript">
+
+            /*
+                 Initialize and render the MenuBar when its elements are ready 
+                 to be scripted.
+            */
+
+            YAHOO.util.Event.onContentReady("headingmenu", function () {
+
+                /*
+					Instantiate a MenuBar:  The first argument passed to the constructor
+					is the id for the Menu element to be created, the second is an 
+					object literal of configuration properties.
+                */
+
+                var oMenuBar = new YAHOO.widget.MenuBar("headingmenu", { 
+                                                            autosubmenudisplay: true, 
+                                                            hidedelay: 750, 
+                                                            lazyload: true });
+
+                /*
+                     Call the "render" method with no arguments since the 
+                     markup for this MenuBar instance is already exists in 
+                     the page.
+                */
+
+                oMenuBar.render();
+
+            });
+
+        </script>
+        
+        <div id="headingmenu" class="yuimenubar yuimenubarnav">
+          <div class="bd">
+                          
+              <ul class="first-of-type">
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#">Admin</a>
+                    <div id="admin" class="yuimenu">
+                        <div class="bd">                    
+                            <ul>
+                                <li class="yuimenuitem" tal:repeat="action python: context.getActions(request,group='admin')">
+                                    <tal:block tal:replace="structure action"  tal:on-error="string: error"/>
+                                </li>
+                            </ul>                    
+                        </div>
+                    </div>                                        
+                </li>
+              </ul>
+              
+            </div>
+        </div> 
+       </tal:block>
+    </div>
+
+
+
+    <div  metal:define-macro="footer">
+
+     <p/>
+     <div class="yui-g">
+         <div class="yui-u first" tal:content="structure root/copyright_statement"> &copy; Swan Valley Fish and Lily Farm, 2008.</div> 
+         <div class="yui-u" tal:condition="request/principal/ADMIN|nothing">
+            <div class="footer_right" tal:content="request/principal"/> 
+            <tal:block tal:condition="python: request.principal.email() != 'anonymous'">
+                <div class="footer_right" tal:content="string: Template ${template/pt_source_file}">Page Footer</div>
+            </tal:block>
+         </div>
+     </div>
+    </div>
+
+
+    <div metal:define-macro="portlets">
+       <tal:block tal:content="structure python: root.portlets(context,request,'samples')"/>
+    </div>
+</body>
+</html> 

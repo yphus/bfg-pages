@@ -1,0 +1,15 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    
+   </head>
+   <body>
+        
+            <div tal:omit-tag="" metal:fill-slot="body">
+<tal:block metal:define-macro="body">
+                     
+               <div tal:content="structure context/body|nothing"/>
+ </tal:block>
+            </div>
+       
+   </body>
+</html>
