@@ -6,7 +6,7 @@
    <body>
         <tal:block metal:define-macro="body">
             
-            <div metal:fill-slot="body">
+            <div metal:fill-slot="content">
                <h3>Edit <tal:block content="context/class_name|context/kind"/></h3>
                <script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
                <div class="yui-gd" tal:content="structure form"/>

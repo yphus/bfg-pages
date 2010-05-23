@@ -18,9 +18,10 @@ data = [
 
 (models.Folder, [
           {'name':'news','key_name':'news','parent_':'/','display_order':15}, 
-          {'name':'galleries','key_name':'galleries','parent_':'/','display_order':9}, 
+          #{'name':'galleries','key_name':'galleries','parent_':'/','display_order':9}, 
           {'name':'actions','key_name':'actions','parent_':'/','display_order':99},
-          {'name':'portlets','key_name':'portlets','parent_':'/','display_order':99},] , "FOLDERS",[],lambda x: not list(models.Folder.all()),
+          #{'name':'portlets','key_name':'portlets','parent_':'/','display_order':99}
+        ] , "FOLDERS",[],lambda x: not list(models.Folder.all()),
 ),
           
 (models.Action,[{ 'name':'view_', 'label':'View','parent_':'/actions',

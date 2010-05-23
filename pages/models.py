@@ -5,6 +5,7 @@ import datetime
 from itertools import groupby
 from urllib import unquote
 
+
 import zope.lifecycleevent
 import zope.interface
 from zope.interface import implements,Interface
@@ -15,6 +16,7 @@ from zope.component import queryMultiAdapter
 import repoze.bfg.interfaces
 from repoze.bfg.traversal import model_path, find_model, find_root, traverse
 from repoze.bfg.threadlocal import get_current_request
+from repoze.bfg.url import model_url
 
 from gae.pagetemplate import render_template_to_response, render_template
 from google.appengine.ext import db
@@ -31,7 +33,7 @@ try:
     from xml.etree import ElementTree
 except:
     pass
-from gae.utils import admin_required, Redirect
+from gae.utils import admin_required, Redirect,settings
 
 from interfaces import IContentish
 import interfaces
@@ -43,7 +45,7 @@ from utils import retry
 import getimageinfo
 import logging
 
-import registry
+#import registry
 
 class DuplicateName(Exception):
     pass
@@ -54,7 +56,7 @@ class HasActions(object):
     def getActions(self,request,group=None,notag=False):
         
         root = self.getRoot()
-        
+
         cache_key = '%s:action:%s:%s:%s' % (request.host,str(self.getPath()),str(group),str(users.get_current_user()))
 
         cached_result = root.getcached(cache_key)
@@ -264,8 +266,7 @@ class Base(db.Model):
     def absolute_url(self,request=None):
         if request is None:
             request = self._request()
-        adp = zope.component.getMultiAdapter((self, request),interface=repoze.bfg.interfaces.IContextURL)
-        return str(adp())
+        return model_url(self,request)
     
     def applyChanges(self,changes):
 
@@ -297,6 +298,7 @@ class Base(db.Model):
         return model_path(self)
     
     def getRoot(self):
+
         return getRoot()
     
     root = property(getRoot)
@@ -334,6 +336,12 @@ class Base(db.Model):
             title = self.name
         return title
  
+    
+    def user(self):
+        return users.get_current_user()
+    
+    def is_current_user_admin(self):
+        return users.is_current_user_admin()
             
     def __repr__(self):
         if self.is_saved():
@@ -636,6 +644,9 @@ class Root(FolderishMixin, ContentishMixin, HasActions):
     def __repr__(self):
         return '<Root name="%s">' % self.name
     
+    @property
+    def settings(self):
+        return settings
         
     @classmethod
     def kinds(cls):
@@ -811,7 +822,7 @@ class Action(ContentishMixin):
     label = db.StringProperty()
     expr = db.StringProperty()
     guard_expr = db.StringProperty()
-    css_class = db.StringProperty()
+    css_class = db.StringProperty(default='')
     group = db.StringProperty()
     content = db.StringListProperty(default=["*",])
     
@@ -1496,18 +1507,13 @@ Root.register_models(PropertySheet)
 def getRoot(environ=None,cache=True):
     
     root = None
-   
-    if 'root' in Root._v_cache and cache:
-        root= Root._v_cache['root']  
+    
+    root= Root.all().get()
+    if root:    
+        root.environ = environ      
     else:
-        r= Root.all().get()
-        if r:
-            Root._v_cache['root'] = r
-            root= Root._v_cache['root']
-            root.environ = environ      
-        else:
-            root = Root()   
-             
+        root = Root()   
+    
     return root
 
 

@@ -15,8 +15,8 @@ from google.appengine.ext.webapp import Request
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 
-from repoze.bfg.registry import populateRegistry
-from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
+#from repoze.bfg.registry import populateRegistry
+#from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
 from gae.utils import BREAKPOINT
 
 from zope.component import getSiteManager        
