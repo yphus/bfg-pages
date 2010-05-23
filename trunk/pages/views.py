@@ -10,7 +10,7 @@ from gae.pagetemplate import render_template_to_response, render_template, Templ
 from gae.utils import admin_required, BREAKPOINT
 from gae.utils import Redirect,admin_required
 
-from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
+#from repoze.bfg.interfaces import IGETRequest,IPOSTRequest
 
 import interfaces
 import models
@@ -54,9 +54,9 @@ def add_view(context, request):
 
         defaults = schema.load_defaults(fake_obj,structure)
         form.defaults = defaults
-        if IGETRequest.providedBy(request):
+        if request.method == 'GET':
             pass
-        elif IPOSTRequest.providedBy(request):
+        elif request.method == 'POST':
             try:
                 changes = form.validate(request)
                 name = changes.pop('name')
@@ -116,10 +116,10 @@ def edit_view(context, request):
 
     defaults = schema.load_defaults(context,structure)
     form.defaults = defaults
-    
-    if IGETRequest.providedBy(request):
+
+    if request.method == 'GET':
         pass
-    elif IPOSTRequest.providedBy(request):
+    elif request.method == 'POST':
         try:
 
             changes = form.validate(request)
@@ -210,7 +210,7 @@ def folder_view(context, request):
     default_content = None
     result = ""
     alt_body = ""
-    #BREAKPOINT()
+  
     logging.info('Original folder_view')
     
     if context.default_content and context.default_content in context.contentNames():

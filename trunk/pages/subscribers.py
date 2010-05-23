@@ -25,6 +25,8 @@ def annotate_request(event):
 def init_session(event):
     """Subscriber hook to initialise/manipulate the session on a new request.
     """
+    from qtrack.utils import set_trace
+    set_trace()
     request = event.request
     session = request.environ.get('beaker.session',None)
     if session:

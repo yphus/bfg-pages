@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.repoze.org/bfg">
 
     <!-- this must be included for the view declarations to work -->
-    <!-- <include package="repoze.bfg.includes" /> -->
+    <include package="repoze.bfg.includes" />
 
     <subscriber
         for="repoze.bfg.interfaces.INewRequest"
@@ -16,13 +16,13 @@
         for="zope.lifecycleevent.ObjectCreatedEvent"
         handler=".subscribers.manage_cache"/>
 
-    <subscriber
+    <!-- <subscriber
         for="zope.lifecycleevent.ObjectCreatedEvent"
-        handler=".subscribers.init_session"/>
+        handler=".subscribers.init_session"/> -->
 
-    <!-- view for=".models.Root"
+    <view for=".models.Root"
         view=".views.setup_view"
-        name="setup" / -->
+        name="setup" />
 
     <view for=".interfaces.IPortletContext"
         view=".views.portlet_view"
@@ -33,9 +33,21 @@
         name="sample2" />
 
     <view
+        for=".interfaces.IPage"
+        view=".views.content_view"
+        name="view"/>
+    <view
+        for=".interfaces.IPage"
+        view=".views.content_view"
+        />
+
+
+    <view
         for=".interfaces.IContent"
         view=".views.content_view"
         name="view"/>
+
+
 
     <view
         for=".interfaces.IContent"
@@ -46,26 +58,30 @@
         view=".views.root_view"
         name="view"/>
 
-    <!-- <view
+    <view
         for=".interfaces.IRoot"
-        view=".views.root_view"/> -->
+        view=".views.root_view"/>
 
     <view
         for=".interfaces.IRoot"
         view=".views.sitemap_view"
         name="sitemap.xml"/>
-
+    
+    <view
+        for=".interfaces.IRoot"
+        view=".views.root_view"
+        name="contents"/>
 
     <view
         for=".interfaces.IFolderish"
         view=".views.contents"
         name="contents"/>
 
-    <!-- <view
+    <view
         for=".interfaces.IFolder"
         view=".views.folder_view"
         name="view"
-        /> -->
+        />
 
     <view
         for=".interfaces.IFolder"
