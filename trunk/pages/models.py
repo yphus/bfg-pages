@@ -486,13 +486,13 @@ class FolderishMixin(db.Model):
        
         if cached_result and not getattr(request.principal,'ADMIN',False) :
             return cached_result 
-        values = self.contentValues(REQUEST,kind=kind)
+        values = self.contentValues(request,kind=kind)
         
         if limit:
             values = values[0:min(limit,len(values))]
         
-        for i in self.contentValues(REQUEST,kind=kind):
-            url = i.absolute_url(REQUEST)
+        for i in self.contentValues(request,kind=kind):
+            url = i.absolute_url(request)
             title = i.title_or_id()
             description = i.description or ''
             summary={'name':i.name,'url':url,'title':title,
@@ -1099,8 +1099,6 @@ class StaticList(FolderishMixin,ContentishMixin):
     list_items = db.TextProperty(default=u'')
     custom_view = db.StringProperty(default=u'')
 
-
-
     def template(self):
         if self.custom_view:
             return self.custom_view
@@ -1131,18 +1129,18 @@ class StaticList(FolderishMixin,ContentishMixin):
        
         if cached_result and not getattr(request.principal,'ADMIN',False) :
             return cached_result 
-        values = self.contentValues(REQUEST)
+        values = self.contentValues(request)
         
         if limit:
             values = values[0:min(limit,len(values))]
         
-        for i in self.contentValues(REQUEST):
+        for i in self.contentValues(request):
             if self.reparent:
                 i.__parent__ = self
                 i.__name__ = str(i.key())
-                url = self.reparent_absolute_url(i,REQUEST)
+                url = self.reparent_absolute_url(i,request)
             else:
-                url = i.absolute_url(REQUEST)
+                url = i.absolute_url(request)
             title = i.title_or_id()
             description = i.description or ''
             summary={'name':i.name,'url':url,'title':title,
@@ -1241,7 +1239,6 @@ class StaticList(FolderishMixin,ContentishMixin):
 class QueryView(FolderishMixin,ContentishMixin):
     """ """
     
-    
     zope.interface.implements(interfaces.IQueryView) 
     _template = "query"
     body = db.TextProperty(default=u'')
@@ -1253,8 +1250,6 @@ class QueryView(FolderishMixin,ContentishMixin):
     group_by = db.TextProperty(default=u'')
     custom_view = db.StringProperty(default=u'')
   
-
-
     def template(self):
         if self.custom_view:
             return self.custom_view
@@ -1293,16 +1288,13 @@ class QueryView(FolderishMixin,ContentishMixin):
             else:
                 raise KeyError('Entity key not valid for query (%s)' % find_kind)
         
-        
         cache_key = str(key)
         obj = root.getcached(cache_key)
         
         if not obj:
-                         
             obj = db.get(name)
             root.setcached(cache_key,obj)
             
-        
         if obj:
             if isinstance(obj,NonContentishMixin) or self.reparent:
                 try:
@@ -1319,7 +1311,6 @@ class QueryView(FolderishMixin,ContentishMixin):
         
         if not request: 
             request = self._request()
-            
         
         root = self.getRoot()
         cache_key = str(self.absolute_url().rstrip())+":summary"
