@@ -161,7 +161,8 @@ def cachemethodoutput(meth):
         isAdmin = getattr(self.request.principal,'ADMIN',False)
         
         if not isAdmin:
-            if IPOSTRequest.providedBy(self.request):
+            #if IPOSTRequest.providedBy(self.request):
+            if (self.request.method == 'POST'):
                 key = key + ":POST:" + str(self.request.str_POST)
             
             output = memcache.get(key)
@@ -169,7 +170,8 @@ def cachemethodoutput(meth):
                 logging.debug('got from cachemethodoutput: %s' % (key))
                 return output
         else:
-            if IPOSTRequest.providedBy(self.request):
+            #if IPOSTRequest.providedBy(self.request):
+            if (self.request.method == 'POST'):
                 key = key + ":POST:" + str(self.request.str_POST)
 
         updateSessionCacheInfo(self.request,key,{'title':'Method'})
