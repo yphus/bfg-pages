@@ -8,7 +8,8 @@ from urllib import unquote
 
 import zope.lifecycleevent
 import zope.interface
-from zope.interface import implements,Interface
+import zope.component
+from zope.interface import implements,Interface,providedBy
 from zope.tales.engine import Engine
 from zope.interface.declarations import getObjectSpecification
 from zope.component import queryMultiAdapter
@@ -37,6 +38,7 @@ from gae.utils import admin_required, Redirect,settings
 
 from interfaces import IContentish
 import interfaces
+from repoze.bfg.threadlocal import get_current_registry
 
 from gae.utils import BREAKPOINT
 
@@ -103,13 +105,16 @@ def getPortlets(context,request,group=None,notag=False):
     results = []
     all_portlets = list(star_portlets) + list(kind_portlets)
     all_portlets.sort(lambda x,y: cmp(int(x.display_order), int(y.display_order)))
+    #logging.info('***portlets2 (%s): %s' % (len(all_portlets),repr(all_portlets)))
     for portlet in all_portlets:
         if portlet.allowed(context,request):
+            #logging.info('*Yep - Portlet %s allowed' % repr(portlet))
             results.append( portlet.resolve(context,request,notag))
     results = '\n'.join(results)
     
 ##    root.setcached(cache_key,results)
 
+    #logging.info('***portlet results: %s' % repr(results))
     return results   
 
 class FileTypeBlobProperty(db.BlobProperty):
@@ -252,13 +257,20 @@ class Base(db.Model):
         viewdef = traverse(self,path)
         if REQUEST is None:
             REQUEST=self._request()
-        #BREAKPOINT()    
+        request = REQUEST
         #gsm = registry._registry
-        gsm = zope.component.getSiteManager()
-        #BREAKPOINT()
-        view = gsm.getMultiAdapter((viewdef['context'],REQUEST),\
-                               repoze.bfg.interfaces.IView,viewdef['view_name'])
-        return view
+        #/gsm = zope.component.getSiteManager()
+        try:
+            reg = request.registry
+        except AttributeError:
+            reg = get_current_registry()
+
+        context = viewdef['context']
+        name = viewdef['view_name']
+        provides = map(providedBy,(request,context))#BREAKPOINT()
+        #view = gsm.getMultiAdapter((c,REQUEST),repoze.bfg.interfaces.IView,n)
+        view = reg.adapters.lookup(provides,repoze.bfg.interfaces.IView,name=name)
+        return view(context,request)
 
     def _request(self):
         return get_current_request()
@@ -908,9 +920,25 @@ class Portlet(Action):
         expr = self.engine.compile(self.expr)       
         name = expr(ac)
 
-        result = zope.component.queryMultiAdapter((PortletContext(context,self),request),repoze.bfg.interfaces.IView,name)
+        #gsm = zope.component.getSiteManager()
+        try:
+            reg = request.registry
+        except AttributeError:
+            reg = get_current_registry()
+        pc = PortletContext(context,self)
+        provides=map(zope.interface.providedBy,(request,pc))
+        #objs = map(zope.interface.providedBy,(PortletContext(context,self),request))
+        #result = zope.component.queryMultiAdapter((PortletContext(context,self),request),repoze.bfg.interfaces.IView,name)
+        #result = reg.queryMultiAdapter((PortletContext(context,self),request),repoze.bfg.interfaces.IView)
+        #result = reg.queryMultiAdapter((PortletContext(context,self),request),interfaces.IPortlet,name)
+        #result = zope.component.queryMultiAdapter(objs,repoze.bfg.interfaces.IView,name)
+        result = reg.adapters.lookup(provides,repoze.bfg.interfaces.IView,name=name)
+        
         if result is None:
             result = ""
+        else:
+            result = result(pc,request)
+        #logging.info('***resolved portlet (%s): %s - %s' % (name,type(result),repr(result)))
         return result
 
 
