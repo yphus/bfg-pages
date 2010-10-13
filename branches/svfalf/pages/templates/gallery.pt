@@ -1,0 +1,25 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+     <title metal:fill-slot="title" tal:content="context/title"></title>
+   </head>
+   <body>
+
+       <div metal:fill-slot="body">
+          <tal:block metal:define-macro="body">
+            <link rel="stylesheet" href="/css/lightbox.css" type="text/css" media="screen">
+            <script type="text/javascript" src="/js/prototype.js"></script>
+            <script type="text/javascript" src="/js/scriptaculous.js?load=effects,builder"></script>
+            <script type="text/javascript" src="/js/lightbox.js"></script>
+
+            <h1 tal:content="context/title"/> 
+            <div tal:content="context/description"/>               
+            <div tal:content="structure context/body|nothing"/>
+                 
+            <div class="section" tal:condition="python: context.resolved_gallery and len(context.resolved_gallery)" >
+                <tal:block tal:content="structure context/resolved_gallery"/>
+            </div>
+          </tal:block> 
+        </div>
+        
+   </body>
+</html>

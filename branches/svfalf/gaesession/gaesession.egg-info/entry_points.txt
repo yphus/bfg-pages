@@ -1,0 +1,7 @@
+
+      # -*- Entry points: -*-
+     
+
+[beaker.backends]
+          
+    gaememcached = gaesession.gaememcached:MemcachedNamespaceManager

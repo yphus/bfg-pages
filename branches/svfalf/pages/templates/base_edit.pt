@@ -1,0 +1,22 @@
+<html metal:use-macro="template_path/main_template/macros/main">
+   <head>
+    <title metal:fill-slot="title" tal:content="context/title"></title>
+    <base metal:fill-slot="base_href" tal:attributes="href python:context.absolute_url(request)" />
+   </head>
+   <body>
+        <tal:block metal:define-macro="body">
+            
+            <div metal:fill-slot="content">
+               <h3>Edit <tal:block content="context/class_name|context/kind"/></h3>
+               <script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
+               <div class="yui-gd" tal:content="structure form"/>
+
+               <script tal:define="context_url python: context.absolute_url(request)"
+                       type="text/javascript" 
+                       tal:content="string:new nicEditor({fullPanel : true,upLoadURI:'${context_url}'}).panelInstance('form-body');">
+                
+               </script>
+            </div>
+        </tal:block>
+   </body>
+</html>
