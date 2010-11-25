@@ -117,7 +117,7 @@ class ImageResource(FileResource):
     """ the resources list holds  [ {'name':... , 'mimetype':..., 'size':0, width: 0, height: 0} ] """
     
     _resource_type = RawImage
-    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'width':0,'height':0,'filename':'','description':''}
+    _resource_summary = {'name':'','mimetype':'application/octet-stream','size':0,'width':0,'height':0,'filename':''}
     _default = 'raw'
     
     def _updateResource(self,name,mimetype,resourceobj,filename=''):
@@ -128,7 +128,7 @@ class ImageResource(FileResource):
         return obj
     
     def tag(self,*args,**kwargs):
-        imgtmpl = """<img src="%s" width="%d" height="%d" alt="%s" %s />"""
+        imgtmpl = """<img src="%s" width="%d" height="%d" %s />"""
         resname = self._default
         if args:
             if len(args) > 1:
@@ -160,7 +160,6 @@ class ImageResource(FileResource):
         return imgtmpl % (url.rstrip('/'),
             resource.get('width'),
             resource.get('height'),
-            resource.get('description',''),
             opts)
                 
         
