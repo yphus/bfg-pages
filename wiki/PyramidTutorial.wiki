@@ -1,5 +1,5 @@
 #summary Example setup running pyramid on appengine.
-#labels pyramid,appengine
+#labels pyramid,appengine,python
 
 = Introduction =
 
@@ -51,6 +51,17 @@ timh@chrome:~/tut1$ ln -s app/versions.cfg
 timh@chrome:~/tut1$ mkdir -p var/downloads
 timh@chrome:~/tut1$ python2.5 bootstrap.py 
 timh@chrome:~/tut1$ bin/buildout
+
+... stuff happens ...
+
+timh@chrome:~/tut1$
+timh@chrome:~/tut1$ bin/dev_appserver 
+INFO     2010-12-03 15:24:27,784 appengine_rpc.py:153] Server: appengine.google.com
+WARNING  2010-12-03 15:24:27,788 datastore_file_stub.py:573] Could not read datastore data from /home/timh/tut1/var/data.store
+INFO     2010-12-03 15:24:27,816 dev_appserver_main.py:485] Running application pyramid-gae-tutorial on port 8080: http://localhost:8080
+WARNING  2010-12-03 15:24:33,924 main.py:20] Starting main
+INFO     2010-12-03 15:24:34,171 dev_appserver.py:3317] "GET / HTTP/1.1" 200 -
+
 
 }}}
 
