@@ -9,6 +9,8 @@ Its based on predefined project.  A paster based template to build the project w
 
 = Details =
 
+== Setup ==
+
 To do the setup I am going to use a buildout recipe developed by Rodrigo Moraes <rodrigo moraes at gmail com>.  Recipe at http://pypi.python.org/pypi/appfy.recipe.gae/0.9.1.
 
 
@@ -79,5 +81,10 @@ and something similar to below will appear in the terminal
 INFO     2010-12-03 15:24:34,171 dev_appserver.py:3317] "GET / HTTP/1.1" 200 -
 }}}
 
+== Details of the sample app ==
+
+Now lets look at the difference between this sample app and the one in the original tutorial.
+
+... fill in some stuff here ...
 
  
