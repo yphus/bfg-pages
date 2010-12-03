@@ -4,12 +4,12 @@
 = Introduction =
 
 This is a tutorial on getting the basic tutorial code for Pyramid running on appengine.
-Its a very manual process for now. Paster templates to create the project will come later.
+Its based on predefined project.  A paster based template to build the project will come later. 
 
 
 = Details =
 
-To do the setup I am going to use a buildout recipe.
+To do the setup I am going to use a buildout recipe developed by Rodrigo Moraes <rodrigo moraes at gmail com>.  Recipe at http://pypi.python.org/pypi/appfy.recipe.gae/0.9.1.
 
 {{{
 timh@chrome:~$ mkdir tut1
