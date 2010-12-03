@@ -153,6 +153,9 @@ things to discuss.
   * appengine runs multiple single threaded instances of your code, to service the requests.
   * instances of your app can only share state/information via the datastore or memcache. 
   * web requests must run within 30seconds. 
+  * startup time for a cold instance is crucial. 
+     * Try and defer things if you can. For instance don't load up a deform/formish schemas for forms until you actually need them.
+     * do all you configuration imperatively.  zcml and scan is slower.
 
 === Important links to documents and/or resources ===
 
