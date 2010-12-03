@@ -11,6 +11,7 @@ Its based on predefined project.  A paster based template to build the project w
 
 To do the setup I am going to use a buildout recipe developed by Rodrigo Moraes <rodrigo moraes at gmail com>.  Recipe at http://pypi.python.org/pypi/appfy.recipe.gae/0.9.1.
 
+
 {{{
 timh@chrome:~$ mkdir tut1
 timh@chrome:~$ cd tut1
