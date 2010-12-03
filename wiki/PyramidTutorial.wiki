@@ -9,8 +9,17 @@ Its a very manual process for now. Paster templates to create the project will c
 
 = Details =
 
-First step is follow the steps in http://docs.pylonshq.com/pyramid/dev/narr/install.html#installing-pyramid-on-a-unix-system
+To do the setup I am going to use a buildout recipe.
 
-*Remember that appengine runs python2.5.x (don't even attempt using anything else) so anywhere its says python2.6 in the tutorials use 2.5) *
+timh@chrome:~$ mkdir tut1
+timh@chrome:~$ cd tut1
+timh@chrome:~/tut1$ virtualenv --no-site-packages --python=/usr/bin/python2.5 .
+Running virtualenv with interpreter /usr/bin/python2.5
+New python executable in ./bin/python2.5
+Also creating executable in ./bin/python
+Installing setuptools............done.
+timh@chrome:~/tut1$ source bin/activate
+(tut1)timh@chrome:~/tut1$ bin/easy_install appfy.recipe.gae
+
 
  
