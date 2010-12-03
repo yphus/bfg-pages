@@ -1,0 +1,15 @@
+#summary Example setup running pyramid on appengine.
+#labels pyramid,appengine
+
+= Introduction =
+
+This is a tutorial on getting the basic tutorial code for Pyramid running on appengine.
+Its a very manual process for now. Paster templates to create the project will come later.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
