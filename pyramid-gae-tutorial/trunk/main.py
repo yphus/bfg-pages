@@ -6,19 +6,23 @@ import sys,os
 
 sys.path.insert(0,'lib/dist')
 
-import utils
-
 from pyramid.configuration import Configurator
 from models import get_root
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-
+settings = {
+    'reload_templates': 'false',
+    'debug_authorization': 'false',
+    'debug_notfound': 'false',
+    'debug_templates': 'false',
+    'default_locale_name': 'en',
+}
 
 def main():
     """ This function returns a Pyramid WSGI application.
     """
     logging.warning('Starting main')
-    config = Configurator(root_factory=get_root,settings=utils.settings)
+    config = Configurator(root_factory=get_root,settings=settings)
     config.add_view('views.my_view',
                     context='models.MyModel',
                     renderer='templates/mytemplate.pt')
