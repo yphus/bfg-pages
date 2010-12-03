@@ -19,7 +19,7 @@ settings = {
 }
 
 def main():
-    """ This function returns a Pyramid WSGI application.
+    """ This function runs a Pyramid WSGI application.
     """
     
     config = Configurator(root_factory=get_root,settings=settings)
