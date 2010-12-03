@@ -138,4 +138,11 @@ things to discuss.
   * app.yaml
   * configuring chameleon
 
+
+== Deploying the app ==
+
+  * appcfg
  
+== Some important info/links for appengine ==
+
+  
