@@ -11,6 +11,7 @@ Its a very manual process for now. Paster templates to create the project will c
 
 To do the setup I am going to use a buildout recipe.
 
+{{{
 timh@chrome:~$ mkdir tut1
 timh@chrome:~$ cd tut1
 timh@chrome:~/tut1$ virtualenv --no-site-packages --python=/usr/bin/python2.5 .
@@ -20,6 +21,7 @@ Also creating executable in ./bin/python
 Installing setuptools............done.
 timh@chrome:~/tut1$ source bin/activate
 (tut1)timh@chrome:~/tut1$ bin/easy_install appfy.recipe.gae
+}}}
 
 
  
