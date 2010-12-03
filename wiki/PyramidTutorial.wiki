@@ -123,6 +123,8 @@ and something similar to below will appear in the terminal
 INFO     2010-12-03 15:24:34,171 dev_appserver.py:3317] "GET / HTTP/1.1" 200 -
 }}}
 
+This sample app has been deployed on appspot. You can see it at http://pyramid-gae-tutorial.appspot.com/
+
 == Details of the sample app ==
 
 Now lets look at the difference between this sample app and the one in the original tutorial.
