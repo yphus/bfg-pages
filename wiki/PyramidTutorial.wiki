@@ -1,5 +1,5 @@
 #summary Example setup running pyramid on appengine.
-#labels pyramid,appengine,python
+#labels pyramid,appengine,python,tutorial
 
 = Introduction =
 
@@ -85,6 +85,15 @@ INFO     2010-12-03 15:24:34,171 dev_appserver.py:3317] "GET / HTTP/1.1" 200 -
 
 Now lets look at the difference between this sample app and the one in the original tutorial.
 
-... fill in some stuff here ...
+things to discuss.
+
+  * main.py
+  * run_wsgi_app
+  * settings
+  * debugging with pdb
+  * static handlers.  
+  * default_error handler
+  * app.yaml
+  * configuring chameleon
 
  
