@@ -21,6 +21,32 @@ Also creating executable in ./bin/python
 Installing setuptools............done.
 timh@chrome:~/tut1$ source bin/activate
 (tut1)timh@chrome:~/tut1$ bin/easy_install appfy.recipe.gae
+(tut1)timh@chrome:~/tut1$ deactivate
+timh@chrome:~/tut1$
+timh@chrome:~/tut1$ svn checkout http://bfg-pages.googlecode.com/svn/pyramid-gae-tutorial/trunk app
+A    app/default_error.html
+A    app/settings.yaml
+A    app/app.yaml
+A    app/pkg_resources.py
+A    app/views.py
+A    app/bootstrap.py
+A    app/buildout.cfg
+A    app/lib
+A    app/lib/dist
+A    app/utils.py
+A    app/static
+A    app/static/logo.png
+A    app/static/pylons.css
+A    app/static/favicon.ico
+A    app/tests.py
+A    app/models.py
+A    app/main.py
+A    app/templates
+A    app/templates/mytemplate.pt
+Checked out revision 159.
+timh@chrome:~/tut1$ ln -s app/buildout.cfg 
+timh@chrome:~/tut1$ ln -s app/bootstrap.py 
+
 }}}
 
 
