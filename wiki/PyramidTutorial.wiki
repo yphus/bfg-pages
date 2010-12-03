@@ -9,7 +9,8 @@ Its a very manual process for now. Paster templates to create the project will c
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+First step is follow the steps in http://docs.pylonshq.com/pyramid/dev/narr/install.html#installing-pyramid-on-a-unix-system
+
+*Remember that appengine runs python2.5.x (don't even attempt using anything else) so anywhere its says python2.6 in the tutorials use 2.5) *
+
+ 
