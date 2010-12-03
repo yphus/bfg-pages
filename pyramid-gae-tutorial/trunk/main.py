@@ -21,7 +21,7 @@ settings = {
 def main():
     """ This function returns a Pyramid WSGI application.
     """
-    logging.warning('Starting main')
+    
     config = Configurator(root_factory=get_root,settings=settings)
     config.add_view('views.my_view',
                     context='models.MyModel',
