@@ -9,7 +9,7 @@ Its based on predefined project.  A paster based template to build the project w
 
 = Details =
 
-This setup assumes your using linux.
+This setup assumes your using linux. Code and buildout config for the tutorial is found at http://bfg-pages.googlecode.com/svn/pyramid-gae-tutorial/trunk
 
 == Setup ==
 
