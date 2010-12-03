@@ -145,6 +145,10 @@ things to discuss.
 
   * appcfg
  
+== Running tests ==
+
+  put stuff here ... 
+
 == Some important info/links for appengine ==
 
 === Import things to note ===
