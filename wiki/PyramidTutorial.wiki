@@ -46,6 +46,11 @@ A    app/templates/mytemplate.pt
 Checked out revision 159.
 timh@chrome:~/tut1$ ln -s app/buildout.cfg 
 timh@chrome:~/tut1$ ln -s app/bootstrap.py 
+timh@chrome:~/tut1$ ln -s app/gaetools.cfg 
+timh@chrome:~/tut1$ ln -s app/versions.cfg 
+timh@chrome:~/tut1$ mkdir -p var/downloads
+timh@chrome:~/tut1$ python2.5 bootstrap.py 
+timh@chrome:~/tut1$ bin/buildout
 
 }}}
 
