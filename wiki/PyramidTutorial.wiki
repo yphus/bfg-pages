@@ -147,4 +147,16 @@ things to discuss.
  
 == Some important info/links for appengine ==
 
+=== Import things to note ===
+
+  * appengine runs python 2.5 in production.  *Do not be even tempted to run python 2.6 or later.  You have been warned* ;-)
+  * appengine runs multiple single threaded instances of your code, to service the requests.
+  * instances of your app can only share state/information via the datastore or memcache. 
+  * web requests must run within 30seconds. 
+
+=== Important links to documents and/or resources ===
+
+  * Read Nick Johnsons blog.  http://blog.notdot.net/
+  * Appengine docs.  http://code.google.com/appengine/docs/python/gettingstarted/
+
   
