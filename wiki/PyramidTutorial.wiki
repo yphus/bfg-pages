@@ -164,12 +164,14 @@ things to discuss.
       + templates
           mytemplate.pt
 
-       tests.py
-       views.py
+      tests.py
+      views.py
 
 }}}
 
 You will also note there are the *.cfg files that you created the symlink to eariler. These are not part of the appengine application.  (I need to stick them somewhere else ;-)
+
+The contents of  lib are as a result of running buildout, which installs pyramid from PyPI eggs and all of its dependancies and then proceeds to copy the actual code from the eggs to lib/dist  _(I need to move everything up to dist, thats a hold over from the original recipe for tipfy, which I am leveraging off)_
 
 === main.py ===
 
