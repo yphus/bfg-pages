@@ -131,6 +131,46 @@ Now lets look at the difference between this sample app and the one in the origi
 
 things to discuss.
 
+=== whats in the app ===
+
+{{{
+   + app
+      + lib
+         + dist
+            #unpicked pyramid and it's dependancies
+            + chameleon  
+            + mako  
+            + markupsafe  
+            + paste  
+            + pyramid  
+            + README.txt  
+            + repoze  
+            + simplejson  
+            + tests  
+            + translationstring  
+            + venusian  
+            + webob  
+            + zope
+ 
+      app.yaml
+      default_error.html
+      main.py
+      pkg_resources.py
+      + static
+         favicon.ico  
+         logo.png  
+         pylons.css
+
+      + templates
+          mytemplate.pt
+
+       tests.py
+       views.py
+
+}}}
+
+You will also note there are the *.cfg files that you created the symlink to eariler. These are not part of the appengine application.  (I need to stick them somewhere else ;-)
+
 === main.py ===
 
 {{{
