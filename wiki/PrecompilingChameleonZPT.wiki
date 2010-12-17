@@ -1,4 +1,4 @@
-# A script/process for precompiling Chameleon zpt.
+#summary A script/process for precompiling Chameleon zpt.
 
 = Introduction =
 
