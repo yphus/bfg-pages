@@ -1,0 +1,38 @@
+#A script/process for precompiling Chameleon zpt.
+
+= Introduction =
+
+Chameleon with zpt has a couple of ways of running.
+One way is for it to parse the templates on first load and keep an 
+in memory cache of the parsed template, which it then uses to render.
+
+The other way is to when it parses the template it produces python output
+that represents the template.  (This process is also performed in the first option
+but doesn't result in a .pt.py file in the filesystem.)
+
+Chameleon is supposed to be faster than zope.pagetemplate for rendering (I haven't 
+benchmarked it myself, but I think I believe the authors ;-)  However the parsing
+and production of the intermediate python code is also supposed to be slower
+than parsing than zope.pagetemplate.  So there is a big win for long running processes
+especially if you can write out the python files to the filesystem, as the cost  
+parsing of templates would only be performed once for any version of the code.
+
+The problem is appengine doesn't allow writing to the filesystem so in memory
+caching is the only option.  This also means that every instance of appengine 
+starting up will incurr the cost of reparsing the templates over and over again.
+
+So the plan here is to pre-compile the pagetemplate to python in the dev environment
+and then deploy the .pt.py files to appengine and not incurr the cost of reparsing 
+over and over again.
+
+The one wart is even on the dev_server you can't write to the filesystem, so a seperate
+precompilation phase is needed.  Ideally this should be run just prior to running 
+appcfg update.  (Or even earlier, however recompiling everything each time you 
+change a template would be a pain. ;-)
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
