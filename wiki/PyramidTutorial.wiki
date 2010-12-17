@@ -35,13 +35,7 @@ Installing setuptools............done.
 
 Activate the virtualenv.  *Note after this part of the setup you will not use virtualenv again*. Then use easy_install to install the appfy.recipe.gae
 {{{
-timh@chrome:~/tut1$ source bin/activate
-(tut1)timh@chrome:~/tut1$ bin/easy_install appfy.recipe.gae
-}}}
-
-Now deactivate virtualenv
-{{{
-(tut1)timh@chrome:~/tut1$ deactivate
+timh@chrome:~/tut1$ ./bin/easy_install appfy.recipe.gae
 }}}
 
 Next check out the sample app which has the bootstrap and buildout configs to be used for the rest of the tutorial.
@@ -90,7 +84,7 @@ Then run bootstrap.py which sets up the environment (this will use distribute)
 
 {{{ 
 
-timh@chrome:~/tut1$ python2.5 bootstrap.py 
+timh@chrome:~/tut1$ ./bin/python bootstrap.py 
 
 ... stuff happens ...
 }}}
@@ -98,7 +92,7 @@ timh@chrome:~/tut1$ python2.5 bootstrap.py
 Now run buildout, which will download and install pyramid and all of it's dependancies in app/lib/dist.  This recipe unpicks the eggs and only deploys the required files.
 
 {{{
-timh@chrome:~/tut1$ bin/buildout
+timh@chrome:~/tut1$ ./bin/buildout
 
 ... stuff happens ...
 
@@ -109,7 +103,7 @@ timh@chrome:~/tut1$
 Now start the dev server.
 
 {{{
-timh@chrome:~/tut1$ bin/dev_appserver 
+timh@chrome:~/tut1$ bin/dev_appserver app
 INFO     2010-12-03 15:24:27,784 appengine_rpc.py:153] Server: appengine.google.com
 WARNING  2010-12-03 15:24:27,788 datastore_file_stub.py:573] Could not read datastore data from /home/timh/tut1/var/data.store
 INFO     2010-12-03 15:24:27,816 dev_appserver_main.py:485] Running application pyramid-gae-tutorial on port 8080: http://localhost:8080
