@@ -108,3 +108,4 @@ and set pyramid settings
  * make a patch for chameleon to have a readonly cache. In other words try to load the .pt.py and if not found, fall back to the in memory filecache rather than try to regenerate a filesystem .pt.py file.  Which will obviously fail on appengine.
  * Make this script have command line args so that it's actually useful.
  * write decent documentation
+ * do some benchmarks to prove if this is usefull or not
