@@ -6,16 +6,14 @@ Chameleon with zpt has a couple of ways of running.
 One way is for it to parse the templates on first load and keep an 
 in memory cache of the parsed template, which it then uses to render.
 
-The other way is to when it parses the template it produces python output
+The other way is when chameleon parses the template it produces python code output
 that represents the template.  (This process is also performed in the first option
 but doesn't result in a .pt.py file in the filesystem.)
 
 Chameleon is supposed to be faster than zope.pagetemplate for rendering (I haven't 
 benchmarked it myself, but I think I believe the authors ;-)  However the parsing
 and production of the intermediate python code is also supposed to be slower
-than parsing than zope.pagetemplate.  So there is a big win for long running processes
-especially if you can write out the python files to the filesystem, as the cost  
-parsing of templates would only be performed once for any version of the code.
+than parsing performed by zope.pagetemplate.  So in theory there is a big win for long running processes especially if you can write out the python files to the filesystem, as the cost  parsing of templates would only be performed once for any version of the code.
 
 The problem is appengine doesn't allow writing to the filesystem so in memory
 caching is the only option.  This also means that every instance of appengine 
@@ -39,7 +37,6 @@ Here is an early implementation, it has hard coded paths and assumes the project
 
 import os
 os.environ['CHAMELEON_CACHE'] = "true"
-
 os.environ['CHAMELEON_DEBUG'] = "false"
 join = os.path.join
 base = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
@@ -94,7 +91,7 @@ if __name__ == '__main__':
 }}}
 
 
-To use the cached templates you will need to set 
+To use the cached templates you will need to set the following in your main.py
 {{{
 os.environ['CHAMELEON_CACHE'] = "true"
 os.environ['CHAMELEON_DEBUG'] = "false"
@@ -108,6 +105,6 @@ and set pyramid settings
 == Whats Next ==
 
  * build some tests
- * make a patch for chameleon to have a readonly cache. In other words try to load the .pt.py and if not found fall back to the in memory filecache rather than try to regenerate a filesystem .pt.py file.  Which will obviously fail on appengine.
+ * make a patch for chameleon to have a readonly cache. In other words try to load the .pt.py and if not found, fall back to the in memory filecache rather than try to regenerate a filesystem .pt.py file.  Which will obviously fail on appengine.
  * Make this script have command line args so that it's actually useful.
  * write decent documentation
