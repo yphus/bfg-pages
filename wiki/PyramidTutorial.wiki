@@ -33,7 +33,9 @@ Also creating executable in ./bin/python
 Installing setuptools............done.
 }}}
 
-Activate the virtualenv.  *Note after this part of the setup you will not use virtualenv again*. Then use easy_install to install the appfy.recipe.gae
+Don't activate the virtualenv.  Use explicit paths when referencing scripts set up by virtualenv. 
+
+Now use easy_install to install the appfy.recipe.gae
 {{{
 timh@chrome:~/tut1$ ./bin/easy_install appfy.recipe.gae
 }}}
