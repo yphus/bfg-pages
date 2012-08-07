@@ -1,5 +1,7 @@
-#summary Example setup running pyramid on appengine.
 #labels pyramid,appengine,python,tutorial
+# This is old, and out of date it will not work with current releases of pyramid.  Am working on a new one.
+
+#summary Example setup running pyramid on appengine.
 
 = Introduction =
 
